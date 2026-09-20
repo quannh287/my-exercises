@@ -16,13 +16,30 @@ export default function MePage() {
 
   const trainingDays = WEEK_DAYS.filter((d) => countItems(store.schedule.days[d]) > 0).length;
 
+  const backupFile = () =>
+    new File([exportJson()], `lich-tap-${new Date().toISOString().slice(0, 10)}.json`, {
+      type: "application/json",
+    });
+
   const download = () => {
-    const url = URL.createObjectURL(new Blob([exportJson()], { type: "application/json" }));
+    const file = backupFile();
+    const url = URL.createObjectURL(file);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `lich-tap-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = file.name;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const share = async () => {
+    const files = [backupFile()];
+    if (!navigator.canShare?.({ files })) return download();
+    try {
+      await navigator.share({ files, title: "Lịch tập" });
+    } catch (err) {
+      // Huỷ chia sẻ không phải lỗi; mọi thứ khác thì rơi về tải file.
+      if ((err as Error).name !== "AbortError") download();
+    }
   };
 
   const onFile = async (file: File) => {
@@ -59,7 +76,10 @@ export default function MePage() {
         </div>
 
         <div className="mt-4 space-y-3">
-          <Button onClick={download}>↓ Xuất bản sao lưu (JSON)</Button>
+          <Button onClick={() => void share()}>↗ Chia sẻ dữ liệu sang máy khác</Button>
+          <Button variant="secondary" onClick={download}>
+            ↓ Xuất bản sao lưu (JSON)
+          </Button>
           <Button variant="secondary" onClick={() => fileRef.current?.click()}>
             ↑ Nhập file sao lưu (JSON)
           </Button>
