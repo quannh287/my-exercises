@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "predev": "node scripts/build-catalog.mjs",
+    "prebuild": "node scripts/build-catalog.mjs",
     "data:fetch": "node scripts/fetch-exercises.mjs",
     "data:vi": "node scripts/build-translations.mjs",
     "test": "node --test --experimental-strip-types lib/*.test.mjs"

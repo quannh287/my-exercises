@@ -22,20 +22,21 @@ export const DAY_SHORT: Record<WeekDay, string> = {
   sun: "CN",
 };
 
+/** The list-view slice, served by /data/catalog.json. */
 export type Exercise = {
   exerciseId: string;
   /** English, as it comes from ExerciseDB. */
   name: string;
-  /** Vietnamese, merged in from /data/vi.json; falls back to `name`. */
+  /** Vietnamese, merged in at build time; falls back to `name`. */
   nameVi: string;
-  instructionsVi: string[];
   gifUrl: string;
   bodyParts: string[];
   equipments: string[];
   targetMuscles: string[];
-  secondaryMuscles: string[];
-  instructions: string[];
 };
+
+/** The heavy per-exercise rest, served by /data/details.json only when one is opened. */
+export type Details = { secondaryMuscles: string[]; instructionsVi: string[] };
 
 export type Item = {
   id: string;

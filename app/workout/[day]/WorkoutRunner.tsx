@@ -9,7 +9,7 @@ import { RestTimer } from "@/components/RestTimer";
 import { Sheet } from "@/components/ui/Sheet";
 import { equipmentLabel } from "@/lib/labels";
 import { setStore, uid, useStore } from "@/lib/store";
-import { useCatalog } from "@/lib/useCatalog";
+import { useCatalog, useDetails } from "@/lib/useCatalog";
 import { completeSet as advance, startProgress, type Progress } from "@/lib/workout";
 import { DAY_LABEL, flatItems, type Log, type LogEntry, type WeekDay } from "@/lib/types";
 
@@ -28,6 +28,7 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
   const { index, setsDone } = progress;
   const item = items[index];
   const exercise = item ? catalog?.byId.get(item.exerciseId) : undefined;
+  const details = useDetails(guideOpen ? item?.exerciseId : undefined);
   const finished = elapsedMs !== null;
 
   const saveLog = useCallback(
@@ -235,7 +236,7 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
 
       <Sheet open={guideOpen} onClose={() => setGuideOpen(false)} title={exercise?.nameVi ?? "Hướng dẫn"}>
         <ol className="list-inside list-decimal space-y-2 text-base leading-relaxed">
-          {(exercise?.instructionsVi ?? []).map((step, i) => (
+          {(details?.instructionsVi ?? []).map((step, i) => (
             <li key={i}>{step}</li>
           ))}
         </ol>

@@ -1,5 +1,5 @@
 // Cache-first for the two things that make the app work offline: the bundled catalog and the GIFs already seen.
-const CACHE = "workout-v1";
+const CACHE = "workout-v2";
 const CACHEABLE = (url) =>
   url.pathname.startsWith("/data/") || url.hostname === "static.exercisedb.dev";
 

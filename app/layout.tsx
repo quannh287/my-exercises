@@ -24,6 +24,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="vi" className={`${nunitoSans.variable} ${literata.variable} ${geistMono.variable} h-full antialiased`}>
+      <head>
+        {/* Starts the catalog fetch during HTML parse instead of after hydration. */}
+        <link rel="preload" href="/data/catalog.json" as="fetch" crossOrigin="anonymous" />
+      </head>
       <body className="min-h-full">
         {children}
         <RegisterSW />

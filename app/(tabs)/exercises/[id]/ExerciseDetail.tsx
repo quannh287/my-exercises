@@ -4,11 +4,12 @@ import { AppBar } from "@/components/ui/AppBar";
 import { Card } from "@/components/ui/Card";
 import { ExerciseGif } from "@/components/ExerciseGif";
 import { bodyPartLabel, equipmentLabel } from "@/lib/labels";
-import { useCatalog } from "@/lib/useCatalog";
+import { useCatalog, useDetails } from "@/lib/useCatalog";
 
 export function ExerciseDetail({ id }: { id: string }) {
   const { catalog, loading } = useCatalog();
   const ex = catalog?.byId.get(id);
+  const details = useDetails(ex ? id : undefined);
 
   return (
     <main className="mx-auto max-w-lg pb-8">
@@ -28,7 +29,7 @@ export function ExerciseDetail({ id }: { id: string }) {
             <Meta label="Nhóm cơ" value={ex.bodyParts.map(bodyPartLabel).join(", ")} />
             <Meta label="Dụng cụ" value={ex.equipments.map(equipmentLabel).join(", ")} />
             <Meta label="Cơ chính" value={ex.targetMuscles.join(", ")} />
-            {ex.secondaryMuscles.length ? <Meta label="Cơ phụ" value={ex.secondaryMuscles.join(", ")} /> : null}
+            {details?.secondaryMuscles.length ? <Meta label="Cơ phụ" value={details.secondaryMuscles.join(", ")} /> : null}
           </Card>
 
           <h2 className="px-4 pb-2 pt-7 font-serif text-base font-semibold text-ink">
@@ -36,7 +37,7 @@ export function ExerciseDetail({ id }: { id: string }) {
           </h2>
           <Card className="mx-4">
             <ol className="list-inside list-decimal space-y-2 p-4 text-base leading-relaxed">
-              {ex.instructionsVi.map((step, i) => (
+              {(details?.instructionsVi ?? []).map((step, i) => (
                 <li key={i}>{step}</li>
               ))}
             </ol>
