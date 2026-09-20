@@ -25,7 +25,8 @@ export function RestTimer({ until, total, onDone }: { until: number; total: numb
       setSecs(remaining);
       if (remaining <= 0) {
         clearInterval(id);
-        navigator.vibrate?.(200);
+        // Ngắt quãng để nhận ra được khi máy nằm trong túi giữa phòng gym ồn.
+        navigator.vibrate?.([120, 80, 120, 80, 240]);
         done.current();
       }
     }, 250);

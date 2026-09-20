@@ -56,7 +56,7 @@ export type Day = { name: string; blocks: Block[] };
 
 export type Schedule = { days: Record<WeekDay, Day | null> };
 
-export type LogEntry = { exerciseId: string; setsDone: number; repsDone: number[] };
+export type LogEntry = { exerciseId: string; setsDone: number; repsDone: number[]; weight?: number };
 
 export type Log = {
   id: string;
@@ -155,6 +155,7 @@ function readLog(raw: unknown, where: string): Log {
         repsDone: arr(entry.repsDone, `${where}.entries[${i}].repsDone`).map((r, j) =>
           num(r, `${where}.entries[${i}].repsDone[${j}]`, 0),
         ),
+        ...(entry.weight === undefined ? {} : { weight: num(entry.weight, `${where}.entries[${i}].weight`, 0) }),
       };
     }),
   };

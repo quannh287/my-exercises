@@ -9,6 +9,7 @@ export function Stepper({
   min = 0,
   max = 999,
   unit,
+  ghost,
 }: {
   label: string;
   value: number;
@@ -18,10 +19,14 @@ export function Stepper({
   min?: number;
   max?: number;
   unit?: string;
+  /** Gợi ý mờ khi chưa nhập (value === 0); chạm để áp dụng. */
+  ghost?: number;
 }) {
   const jump = (delta: number) => {
     const next = stepValue(value, delta, min, max);
-    if (next !== value) onChange(next);
+    if (next === value) return;
+    navigator.vibrate?.(10);
+    onChange(next);
   };
 
   const key = (delta: number) => (
@@ -43,10 +48,25 @@ export function Stepper({
       <span className="block text-[0.65rem] font-semibold uppercase tracking-wide text-muted">{label}</span>
       <div className="mt-2 flex items-stretch gap-2">
         {[...steps].reverse().map((s) => key(-s))}
-        <span className="grid min-w-16 flex-1 place-items-center font-mono text-2xl font-bold tabular-nums">
-          {value}
-          {unit ? <span className="text-xs font-semibold text-muted">{unit}</span> : null}
-        </span>
+        {ghost !== undefined && value === 0 ? (
+          <button
+            type="button"
+            onClick={() => {
+              navigator.vibrate?.(10);
+              onChange(ghost);
+            }}
+            aria-label={`Dùng lại ${label} buổi trước: ${ghost}${unit ?? ""}`}
+            className="grid min-w-16 flex-1 place-items-center font-mono text-2xl font-bold tabular-nums opacity-40"
+          >
+            {ghost}
+            {unit ? <span className="text-xs font-semibold text-muted">{unit}</span> : null}
+          </button>
+        ) : (
+          <span className="grid min-w-16 flex-1 place-items-center font-mono text-2xl font-bold tabular-nums">
+            {value}
+            {unit ? <span className="text-xs font-semibold text-muted">{unit}</span> : null}
+          </span>
+        )}
         {steps.map((s) => key(s))}
       </div>
     </div>

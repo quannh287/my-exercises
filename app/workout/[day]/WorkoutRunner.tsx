@@ -10,6 +10,7 @@ import { Sheet } from "@/components/ui/Sheet";
 import { Stepper } from "@/components/ui/Stepper";
 import { equipmentLabel } from "@/lib/labels";
 import { setStore, uid, useStore } from "@/lib/store";
+import { lastWeight, logVolume, volumeDelta } from "@/lib/stats";
 import { useCatalog, useDetails } from "@/lib/useCatalog";
 import { completeSet as advance, setItemWeight, startProgress, type Progress } from "@/lib/workout";
 import { DAY_LABEL, flatItems, type Log, type LogEntry, type WeekDay } from "@/lib/types";
@@ -17,12 +18,13 @@ import { Icon } from "@/components/ui/Icon";
 
 export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
   const router = useRouter();
-  const day = useStore().schedule.days[dayKey];
+  const store = useStore();
+  const day = store.schedule.days[dayKey];
   const { catalog } = useCatalog();
 
   const items = useMemo(() => (day ? flatItems(day) : []), [day]);
   const [startedAt] = useState(() => Date.now());
-  const [elapsedMs, setElapsedMs] = useState<number | null>(null);
+  const [finishedLog, setFinishedLog] = useState<Log | null>(null);
   const [progress, setProgress] = useState<Progress>(startProgress);
   const [rest, setRest] = useState<{ until: number; total: number } | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
@@ -31,7 +33,6 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
   const item = items[index];
   const exercise = item ? catalog?.byId.get(item.exerciseId) : undefined;
   const details = useDetails(guideOpen ? item?.exerciseId : undefined);
-  const finished = elapsedMs !== null;
 
   const saveLog = useCallback(
     (done: LogEntry[]) => {
@@ -47,7 +48,7 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
         entries: done,
       };
       setStore((s) => ({ ...s, logs: [log, ...s.logs] }));
-      setElapsedMs(finishedAt - startedAt);
+      setFinishedLog(log);
     },
     [day, dayKey, startedAt],
   );
@@ -68,8 +69,9 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
     );
   }
 
-  if (finished) {
-    const minutes = Math.max(1, Math.round(elapsedMs / 60000));
+  if (finishedLog) {
+    const minutes = Math.max(1, Math.round((finishedLog.finishedAt - finishedLog.startedAt) / 60000));
+    const delta = volumeDelta(store.logs, finishedLog);
     return (
       <Centered>
         <span className="grid size-16 place-items-center rounded-full bg-accent-soft text-accent">
@@ -77,8 +79,14 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
         </span>
         <h1 className="font-serif text-2xl font-bold">Xong buổi {day.name}</h1>
         <p className="text-muted">
-          {items.length} bài · {minutes} phút
+          {items.length} bài · {minutes} phút · {logVolume(finishedLog).toLocaleString("vi-VN")} kg
         </p>
+        {delta !== null ? (
+          <p className={`text-sm font-semibold ${delta >= 0 ? "text-accent" : "text-danger"}`}>
+            {delta >= 0 ? "+" : "−"}
+            {Math.abs(delta)}% so với tuần trước
+          </p>
+        ) : null}
         <Button onClick={() => router.replace("/history")}>Xem lịch sử</Button>
         <Button variant="secondary" onClick={() => router.replace("/")}>
           Về lịch tập
@@ -168,7 +176,15 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
       </div>
 
       <div className="px-4 pt-4">
-        <Stepper label="Tạ" unit="kg" value={item.weight ?? 0} onChange={setWeight} steps={[2.5, 5]} max={500} />
+        <Stepper
+          label="Tạ"
+          unit="kg"
+          value={item.weight ?? 0}
+          onChange={setWeight}
+          steps={[2.5, 5]}
+          max={500}
+          ghost={lastWeight(store.logs, item.exerciseId)}
+        />
       </div>
 
       <div className="flex items-center justify-between px-4 pb-2 pt-5">

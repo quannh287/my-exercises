@@ -42,3 +42,6 @@ next-env.d.ts
 
 # generated from data/ by scripts/build-catalog.mjs
 /public/data
+
+# dữ liệu demo sinh từ scripts/build-mock-store.mjs
+/data/mock-store.json

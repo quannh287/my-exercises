@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { Chip, Label } from "@/components/ui/Chip";
 import { useStore } from "@/lib/store";
 import { useCatalog } from "@/lib/useCatalog";
-import { historyStats, logMinutes, logSets } from "@/lib/stats";
+import { historyStats, logMinutes, logSets, logVolume, volumeDelta } from "@/lib/stats";
 import { Icon } from "@/components/ui/Icon";
 
 const fmt = new Intl.DateTimeFormat("vi-VN", { weekday: "long", day: "numeric", month: "numeric" });
@@ -51,6 +51,8 @@ export default function HistoryPage() {
       <ol className="relative space-y-3 border-l border-line/60 pl-5">
         {logs.map((log, i) => {
           const date = new Date(log.dateISO);
+          const volume = logVolume(log);
+          const delta = volume ? volumeDelta(logs, log) : null;
           return (
             <li key={log.id} className="relative">
               <span
@@ -75,6 +77,14 @@ export default function HistoryPage() {
 
                 <p className="mt-2 text-sm text-muted">
                   {log.entries.length} bài tập · {logSets(log)} sets hoàn thành
+                  {volume ? ` · ${volume.toLocaleString("vi-VN")} kg` : ""}
+                  {delta !== null ? (
+                    <span className={`font-semibold ${delta >= 0 ? "text-accent" : "text-danger"}`}>
+                      {" · "}
+                      {delta >= 0 ? "+" : "−"}
+                      {Math.abs(delta)}% so với tuần trước
+                    </span>
+                  ) : null}
                 </p>
 
                 <details className="group mt-2">
@@ -94,6 +104,7 @@ export default function HistoryPage() {
                         </span>
                         <span className="font-mono text-sm text-muted tabular-nums">
                           {entry.setsDone} × {entry.repsDone[0] ?? "—"}
+                          {entry.weight ? ` · ${entry.weight}kg` : ""}
                         </span>
                       </div>
                     ))}

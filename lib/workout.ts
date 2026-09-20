@@ -26,7 +26,12 @@ export function completeSet(items: Item[], p: Progress): Advance {
 
   const entries = [
     ...p.entries,
-    { exerciseId: item.exerciseId, setsDone: item.sets, repsDone: Array(item.sets).fill(item.reps) },
+    {
+      exerciseId: item.exerciseId,
+      setsDone: item.sets,
+      repsDone: Array(item.sets).fill(item.reps),
+      ...(item.weight === undefined ? {} : { weight: item.weight }),
+    },
   ];
   const index = p.index + 1;
   const finished = index >= items.length;

@@ -64,3 +64,31 @@ export function historyStats(logs: Log[], now = new Date()): HistoryStats {
     streakWeeks,
   };
 }
+
+export const logVolume = (l: Log) =>
+  l.entries.reduce((n, e) => n + (e.weight ?? 0) * e.repsDone.reduce((s, r) => s + r, 0), 0);
+
+/** So tonnage buổi này với buổi cùng thứ gần nhất trước đó ("tuần trước"); null khi chưa có mốc. */
+export function volumeDelta(logs: Log[], current: Log): number | null {
+  const prev = logs
+    .filter(
+      (l) =>
+        l.id !== current.id &&
+        l.dayKey === current.dayKey &&
+        new Date(l.dateISO).getTime() < new Date(current.dateISO).getTime(),
+    )
+    .sort((a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime())[0];
+  if (!prev) return null;
+  const base = logVolume(prev);
+  if (!base) return null;
+  return Math.round(((logVolume(current) - base) / base) * 100);
+}
+
+export function lastWeight(logs: Log[], exerciseId: string, excludeLogId?: string): number | undefined {
+  for (const l of [...logs].sort((a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime())) {
+    if (l.id === excludeLogId) continue;
+    const w = l.entries.find((e) => e.exerciseId === exerciseId)?.weight;
+    if (w) return w;
+  }
+  return undefined;
+}
