@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Chip, Label } from "@/components/ui/Chip";
+import { PrefetchMedia } from "@/components/PrefetchMedia";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { useStore } from "@/lib/store";
 import { useToday } from "@/lib/useToday";
@@ -47,7 +48,13 @@ export default function SchedulePage() {
       <div className="mt-4 space-y-3">
         {WEEK_DAYS.map((key) =>
           key === today ? (
-            <TodayCard key={key} dayKey={key} day={schedule.days[key]} names={exerciseNames(schedule.days[key], catalog?.byId)} />
+            <TodayCard
+              key={key}
+              dayKey={key}
+              day={schedule.days[key]}
+              names={exerciseNames(schedule.days[key], catalog?.byId)}
+              gifUrls={exerciseGifs(schedule.days[key], catalog?.byId)}
+            />
           ) : (
             <DayCard key={key} dayKey={key} day={schedule.days[key]} done={week.doneDays.has(key)} />
           ),
@@ -79,6 +86,9 @@ export default function SchedulePage() {
 
 const exerciseNames = (day: Day | null, byId?: Map<string, { nameVi: string }>) =>
   day ? flatItems(day).map((i) => byId?.get(i.exerciseId)?.nameVi ?? i.exerciseId) : [];
+
+const exerciseGifs = (day: Day | null, byId?: Map<string, { gifUrl: string }>) =>
+  day ? flatItems(day).flatMap((i) => byId?.get(i.exerciseId)?.gifUrl ?? []) : [];
 
 function DayBadge({ dayKey, active }: { dayKey: WeekDay; active?: boolean }) {
   return (
@@ -122,7 +132,17 @@ function DayCard({ dayKey, day, done }: { dayKey: WeekDay; day: Day | null; done
   );
 }
 
-function TodayCard({ dayKey, day, names }: { dayKey: WeekDay; day: Day | null; names: string[] }) {
+function TodayCard({
+  dayKey,
+  day,
+  names,
+  gifUrls,
+}: {
+  dayKey: WeekDay;
+  day: Day | null;
+  names: string[];
+  gifUrls: string[];
+}) {
   if (!day) {
     return (
       <div className="overflow-hidden rounded-card bg-surface shadow-soft">
@@ -184,6 +204,8 @@ function TodayCard({ dayKey, day, names }: { dayKey: WeekDay; day: Day | null; n
           </div>
         </div>
       ) : null}
+
+      {gifUrls.length ? <div className="mx-4 mt-3"><PrefetchMedia urls={gifUrls} /></div> : null}
 
       <div className="mt-3 flex items-center justify-between px-4 pb-4">
         <span className="truncate text-sm text-muted">
