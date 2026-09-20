@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { WEEK_DAYS, type Store, type Schedule, type WeekDay } from "./types";
+import { validateStore, WEEK_DAYS, type Store, type Schedule, type WeekDay } from "./types";
 
 const KEY = "workout.v1";
 const DB = "workout";
@@ -15,14 +15,10 @@ export const emptyStore = (): Store => ({ schedule: emptySchedule(), logs: [] })
 function parse(raw: string | null): Store {
   if (!raw) return emptyStore();
   try {
-    const parsed = JSON.parse(raw) as Partial<Store>;
-    const days = { ...emptySchedule().days, ...parsed.schedule?.days };
-    return {
-      schedule: { days },
-      logs: Array.isArray(parsed.logs) ? parsed.logs : [],
-    };
-  } catch {
-    return emptyStore(); // corrupt payload beats a blank screen; the user can re-import
+    return validateStore(JSON.parse(raw));
+  } catch (err) {
+    console.error("Dữ liệu đã lưu không hợp lệ, bắt đầu lại từ rỗng", err);
+    return emptyStore(); // màn hình trắng vĩnh viễn tệ hơn mất dữ liệu; người dùng nhập lại backup được
   }
 }
 
@@ -113,11 +109,14 @@ export function useDay(key: WeekDay) {
 export const exportJson = () => JSON.stringify(getStore(), null, 2);
 
 export function importJson(raw: string): Store {
-  const parsed = JSON.parse(raw) as Partial<Store>;
-  if (!parsed || typeof parsed !== "object" || !parsed.schedule?.days) {
-    throw new Error("File không đúng định dạng backup của app");
+  let json: unknown;
+  try {
+    json = JSON.parse(raw);
+  } catch {
+    throw new Error("File không phải JSON hợp lệ");
   }
-  const store = parse(JSON.stringify(parsed));
+  // Validate xong mới ghi: file hỏng không được chạm vào dữ liệu đang có trên máy.
+  const store = validateStore(json);
   setStore(store);
   return store;
 }

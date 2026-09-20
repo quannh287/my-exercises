@@ -42,8 +42,11 @@ export default function MePage() {
     }
   };
 
+  const MAX_BACKUP = 5 * 1024 * 1024;
+
   const onFile = async (file: File) => {
     try {
+      if (file.size > MAX_BACKUP) throw new Error("File quá lớn, không phải bản sao lưu của app");
       importJson(await file.text());
       setMessage("Đã khôi phục dữ liệu.");
     } catch (err) {
