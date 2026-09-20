@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Chip, Label } from "@/components/ui/Chip";
 import { ExerciseGif } from "@/components/ExerciseGif";
 import { Sheet } from "@/components/ui/Sheet";
+import { Stepper } from "@/components/ui/Stepper";
 import { bodyPartLabel } from "@/lib/labels";
 import { setStore, uid, useStore } from "@/lib/store";
 import { useCatalog } from "@/lib/useCatalog";
@@ -129,7 +130,8 @@ export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
                     </span>
                     <span className="ex-name block truncate text-xs text-muted">{ex?.name}</span>
                     <span className="mt-0.5 block font-mono text-sm text-muted tabular-nums">
-                      {item.sets} × {item.reps} · nghỉ {item.restSec}s
+                      {item.sets} × {item.reps}
+                      {item.weight ? ` · ${item.weight}kg` : ""} · nghỉ {item.restSec}s
                     </span>
                   </span>
                   <span className="shrink-0 px-1 text-lg text-muted" aria-hidden>
@@ -242,16 +244,24 @@ function ItemSheet({
         <Tile onClick={onDelete} icon="🗑" label="Xoá bài" danger />
       </div>
 
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        <StatTile label="Số sets" value={item.sets} onChange={(sets) => patch({ sets })} max={20} />
-        <StatTile label="Reps" value={item.reps} onChange={(reps) => patch({ reps })} max={200} />
-        <StatTile
-          label="Nghỉ (giây)"
+      <div className="mt-3 space-y-2">
+        <Stepper label="Số sets" value={item.sets} onChange={(sets) => patch({ sets })} steps={[1]} min={1} max={20} />
+        <Stepper label="Reps" value={item.reps} onChange={(reps) => patch({ reps })} steps={[1, 5]} min={1} max={200} />
+        <Stepper
+          label="Tạ"
+          unit="kg"
+          value={item.weight ?? 0}
+          onChange={(weight) => patch({ weight: weight || undefined })}
+          steps={[2.5, 5]}
+          max={500}
+        />
+        <Stepper
+          label="Nghỉ"
+          unit="giây"
           value={item.restSec}
           onChange={(restSec) => patch({ restSec })}
-          min={0}
+          steps={[15, 30]}
           max={600}
-          step={15}
         />
       </div>
 
@@ -297,39 +307,5 @@ function Tile({
       </span>
       {label}
     </button>
-  );
-}
-
-function StatTile({
-  label,
-  value,
-  onChange,
-  min = 1,
-  max = 999,
-  step = 1,
-}: {
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  min?: number;
-  max?: number;
-  step?: number;
-}) {
-  const clamp = (v: number) => Math.min(max, Math.max(min, v));
-  const btn = "size-8 shrink-0 rounded-full bg-surface text-lg leading-none text-accent disabled:opacity-30";
-
-  return (
-    <div className="rounded-card bg-bg p-3 text-center">
-      <span className="block text-[0.65rem] font-semibold uppercase tracking-wide text-muted">{label}</span>
-      <div className="mt-2 flex items-center justify-center gap-1.5">
-        <button type="button" className={btn} onClick={() => onChange(clamp(value - step))} disabled={value <= min} aria-label={`Giảm ${label}`}>
-          −
-        </button>
-        <span className="min-w-8 font-mono text-lg font-bold tabular-nums">{value}</span>
-        <button type="button" className={btn} onClick={() => onChange(clamp(value + step))} disabled={value >= max} aria-label={`Tăng ${label}`}>
-          +
-        </button>
-      </div>
-    </div>
   );
 }

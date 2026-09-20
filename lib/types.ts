@@ -44,6 +44,8 @@ export type Item = {
   sets: number;
   reps: number;
   restSec: number;
+  /** Kilograms. Optional so schedules saved before this field still parse. */
+  weight?: number;
   note?: string;
 };
 

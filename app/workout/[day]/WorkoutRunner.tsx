@@ -7,10 +7,11 @@ import { Chip, Label } from "@/components/ui/Chip";
 import { ExerciseGif } from "@/components/ExerciseGif";
 import { RestTimer } from "@/components/RestTimer";
 import { Sheet } from "@/components/ui/Sheet";
+import { Stepper } from "@/components/ui/Stepper";
 import { equipmentLabel } from "@/lib/labels";
 import { setStore, uid, useStore } from "@/lib/store";
 import { useCatalog, useDetails } from "@/lib/useCatalog";
-import { completeSet as advance, startProgress, type Progress } from "@/lib/workout";
+import { completeSet as advance, setItemWeight, startProgress, type Progress } from "@/lib/workout";
 import { DAY_LABEL, flatItems, type Log, type LogEntry, type WeekDay } from "@/lib/types";
 
 export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
@@ -85,6 +86,12 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
 
   const pct = Math.round((index / items.length) * 100);
 
+  const setWeight = (weight: number) =>
+    setStore((s) => ({
+      ...s,
+      schedule: { days: { ...s.schedule.days, [dayKey]: setItemWeight(day, item.id, weight) } },
+    }));
+
   return (
     <main className="mx-auto flex min-h-dvh max-w-lg flex-col">
       <header className="sticky top-0 z-30 border-b border-line/50 bg-surface/95 px-4 pb-2 pt-3 backdrop-blur">
@@ -149,7 +156,13 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
             {exercise?.equipments.length ? ` · ${exercise.equipments.map(equipmentLabel).join(", ")}` : ""}
           </p>
         </span>
-        <Chip>{item.sets} hiệp</Chip>
+        <Chip>
+          {item.sets} hiệp{item.weight ? ` · ${item.weight}kg` : ""}
+        </Chip>
+      </div>
+
+      <div className="px-4 pt-4">
+        <Stepper label="Tạ" unit="kg" value={item.weight ?? 0} onChange={setWeight} steps={[2.5, 5]} max={500} />
       </div>
 
       <div className="flex items-center justify-between px-4 pb-2 pt-5">

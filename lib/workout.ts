@@ -1,4 +1,4 @@
-import type { Item, LogEntry } from "./types";
+import type { Day, Item, LogEntry } from "./types";
 
 export type Progress = { index: number; setsDone: number; entries: LogEntry[] };
 
@@ -32,3 +32,16 @@ export function completeSet(items: Item[], p: Progress): Advance {
   const finished = index >= items.length;
   return { next: { index, setsDone: 0, entries }, rest: finished ? 0 : item.restSec, finished };
 }
+
+/** One tap on a Stepper button: add `delta`, clamp, and drop float drift from 2.5 kg steps. */
+export const stepValue = (value: number, delta: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, Math.round((value + delta) * 10) / 10));
+
+/** The runner only has a flat item list, so the weight has to be found across every block. */
+export const setItemWeight = (day: Day, itemId: string, weight: number): Day => ({
+  ...day,
+  blocks: day.blocks.map((b) => ({
+    ...b,
+    items: b.items.map((i) => (i.id === itemId ? { ...i, weight: weight || undefined } : i)),
+  })),
+});
