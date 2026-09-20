@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "data:fetch": "node scripts/fetch-exercises.mjs",
+    "data:vi": "node scripts/build-translations.mjs",
+    "test": "node --test --experimental-strip-types lib/*.test.mjs"
   },
   "dependencies": {
     "next": "16.3.5",

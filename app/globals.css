@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* iOS-style light theme. Single accent, no dark variant — see README. */
+@theme {
+  --color-bg: #f2f2f7;
+  --color-surface: #ffffff;
+  --color-line: #e5e5ea;
+  --color-ink: #000000;
+  --color-muted: #8e8e93;
+  --color-accent: #007aff;
+  --color-accent-soft: #e8f1ff;
+  --color-danger: #ff3b30;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --radius-card: 1rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Exercise names arrive lowercase from the API; capitalize in CSS, never mutate the data. */
+.ex-name {
+  text-transform: capitalize;
+}
+
+.safe-b {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+input,
+textarea {
+  font-size: 16px; /* anything smaller makes iOS Safari zoom on focus */
+}
+
+/*
+ * Cheap virtualization for the 1500-row exercise list: the browser skips layout,
+ * paint and image decode for offscreen rows, so no virtual-list dependency is needed.
+ * contain-intrinsic-size must match the real row height or the scrollbar jumps.
+ */
+.vrow {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 84px;
 }
