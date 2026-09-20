@@ -11,15 +11,20 @@ const json = async (p) => JSON.parse(await readFile(p, "utf8"));
 // Mirror of cleanInstruction() in lib/labels.ts — the dictionary is keyed by the cleaned string.
 const clean = (s) => s.replace(/^Step:\d+\s*/, "");
 
-const [{ exercises }, taxonomy, vi] = await Promise.all([
+const [{ exercises }, taxonomy, vi, brokenGifs] = await Promise.all([
   json(`${ROOT}/data/exercises.json`),
   json(`${ROOT}/data/taxonomy.json`),
   json(`${ROOT}/data/vi.json`).catch(() => ({ names: {}, sentences: {} })),
+  json(`${ROOT}/data/broken-gifs.json`).catch(() => ({ ids: [] })),
 ]);
+
+// Bài không có gif trên CDN thì bỏ hẳn: người dùng chọn phải cũng không xem được động tác.
+const broken = new Set(brokenGifs.ids);
 
 const catalog = { taxonomy, exercises: [], };
 const details = {};
 for (const e of exercises) {
+  if (broken.has(e.exerciseId)) continue;
   catalog.exercises.push({
     exerciseId: e.exerciseId,
     name: e.name,
@@ -34,6 +39,8 @@ for (const e of exercises) {
     instructionsVi: e.instructions.map((raw) => vi.sentences[clean(raw)] ?? clean(raw)),
   };
 }
+
+console.log(`${catalog.exercises.length}/${exercises.length} bài (bỏ ${broken.size} bài mất gif)`);
 
 await mkdir(OUT, { recursive: true });
 for (const [name, value] of [["catalog", catalog], ["details", details]]) {
