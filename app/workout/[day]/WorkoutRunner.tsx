@@ -13,6 +13,7 @@ import { setStore, uid, useStore } from "@/lib/store";
 import { useCatalog, useDetails } from "@/lib/useCatalog";
 import { completeSet as advance, setItemWeight, startProgress, type Progress } from "@/lib/workout";
 import { DAY_LABEL, flatItems, type Log, type LogEntry, type WeekDay } from "@/lib/types";
+import { Icon } from "@/components/ui/Icon";
 
 export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
   const router = useRouter();
@@ -71,7 +72,9 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
     const minutes = Math.max(1, Math.round(elapsedMs / 60000));
     return (
       <Centered>
-        <span className="grid size-16 place-items-center rounded-full bg-accent-soft text-3xl text-accent">✓</span>
+        <span className="grid size-16 place-items-center rounded-full bg-accent-soft text-accent">
+          <Icon name="check" className="size-8" strokeWidth={2.2} />
+        </span>
         <h1 className="font-serif text-2xl font-bold">Xong buổi {day.name}</h1>
         <p className="text-muted">
           {items.length} bài · {minutes} phút
@@ -107,7 +110,10 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
             }}
             className="min-h-9 text-sm font-semibold text-danger"
           >
-            ✕ Huỷ phiên
+            <span className="flex items-center gap-1">
+              <Icon name="x" className="size-4" strokeWidth={2.2} />
+              Huỷ phiên
+            </span>
           </button>
         </div>
         <div className="mt-1.5 flex items-baseline justify-between gap-2">
@@ -203,7 +209,10 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
                 ) : null}
               </span>
               {state === "done" ? (
-                <Chip tone="accent">✓ Đã xong</Chip>
+                <Chip tone="accent">
+                  <Icon name="check" className="size-3.5" strokeWidth={2.4} />
+                  Đã xong
+                </Chip>
               ) : state === "current" ? (
                 <span className="shrink-0 text-sm font-semibold">Đang tập</span>
               ) : (
@@ -241,7 +250,12 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
       ) : null}
 
       <div className="safe-b sticky bottom-0 mt-6 bg-bg/95 px-4 pb-4 pt-3 backdrop-blur">
-        <Button onClick={completeSet}>✓ Hoàn thành set {setsDone + 1}</Button>
+        <Button onClick={completeSet}>
+          <span className="flex items-center justify-center gap-2">
+            <Icon name="check" className="size-5" strokeWidth={2.4} />
+            Hoàn thành set {setsDone + 1}
+          </span>
+        </Button>
         <p className="mt-2 text-center text-xs text-muted">
           Tự động đếm ngược {item.restSec} giây sau khi bấm
         </p>

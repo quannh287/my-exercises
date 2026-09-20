@@ -10,6 +10,7 @@ import { useCatalog } from "@/lib/useCatalog";
 import { bodyPartLabel } from "@/lib/labels";
 import { estimateMinutes, weekProgress } from "@/lib/stats";
 import { countItems, DAY_LABEL, DAY_SHORT, flatItems, WEEK_DAYS, type Day, type WeekDay } from "@/lib/types";
+import { Icon } from "@/components/ui/Icon";
 
 export default function SchedulePage() {
   const { schedule, logs } = useStore();
@@ -30,9 +31,7 @@ export default function SchedulePage() {
 
       <section className="mt-5 flex items-center gap-4 rounded-card bg-surface p-5 shadow-soft">
         <span className="grid size-12 shrink-0 place-items-center rounded-full bg-accent-soft text-accent">
-          <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-            <path d="M20 4C10 4 4 9 4 16v4M20 4c0 8-5 12-11 12H4" strokeLinecap="round" />
-          </svg>
+          <Icon name="dumbbell" className="size-6" />
         </span>
         <span className="min-w-0 flex-1">
           <Label>Mục tiêu tuần</Label>
@@ -67,9 +66,7 @@ export default function SchedulePage() {
           className="mt-6 flex items-center gap-4 rounded-card bg-accent px-5 py-4 text-white shadow-soft active:bg-accent/85"
         >
           <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/15">
-            <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden>
-              <path d="M8 5v14l11-7z" />
-            </svg>
+            <Icon name="play" className="size-5" />
           </span>
           <span className="min-w-0 flex-1">
             <span className="block text-xs font-semibold uppercase tracking-[0.08em] text-white/75">
@@ -77,7 +74,7 @@ export default function SchedulePage() {
             </span>
             <span className="block truncate font-serif text-lg font-bold">Buổi {todayDay?.name}</span>
           </span>
-          <span aria-hidden>→</span>
+          <Icon name="arrowRight" className="size-5" />
         </Link>
       ) : null}
     </main>
@@ -120,13 +117,14 @@ function DayCard({ dayKey, day, done }: { dayKey: WeekDay; day: Day | null; done
         </span>
       </span>
       {done ? (
-        <Chip tone="accent">✓ Xong</Chip>
+        <Chip tone="accent">
+          <Icon name="check" className="size-3.5" strokeWidth={2.4} />
+          Xong
+        </Chip>
       ) : !day ? (
         <Chip tone="amber">Nghỉ</Chip>
       ) : (
-        <svg viewBox="0 0 8 14" className="size-3.5 shrink-0 text-muted" aria-hidden>
-          <path d="M1 1l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
+        <Icon name="chevronRight" className="size-4 text-muted" strokeWidth={2} />
       )}
     </Link>
   );
@@ -152,7 +150,8 @@ function TodayCard({
           <span className="min-w-0 flex-1">
             <span className="block font-serif text-base font-semibold">Ngày nghỉ</span>
             <Chip tone="accent" className="mt-1">
-              ● Hôm nay
+              <span className="size-1.5 rounded-full bg-accent" aria-hidden />
+              Hôm nay
             </Chip>
           </span>
           <Link href={`/schedule/${dayKey}`} className="text-sm font-semibold text-accent">
@@ -174,7 +173,8 @@ function TodayCard({
         <span className="min-w-0 flex-1">
           <span className="block truncate font-serif text-lg font-bold">{day.name}</span>
           <Chip tone="accent" className="mt-1">
-            ● Hôm nay
+            <span className="size-1.5 rounded-full bg-accent" aria-hidden />
+            Hôm nay
           </Chip>
           <span className="mt-1.5 block text-sm font-semibold text-accent">
             {names.length} bài tập · Dự kiến {estimateMinutes(day)} phút
@@ -185,9 +185,7 @@ function TodayCard({
           aria-label={`Sửa ${DAY_LABEL[dayKey]}`}
           className="grid size-9 shrink-0 place-items-center rounded-full bg-bg text-muted"
         >
-          <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-            <path d="M4 20h4L19 9a2.8 2.8 0 10-4-4L4 16v4z" strokeLinejoin="round" />
-          </svg>
+          <Icon name="pencil" className="size-4" />
         </Link>
       </div>
 
@@ -212,7 +210,7 @@ function TodayCard({
           {day.blocks.map((b) => bodyPartLabel(b.bodyPart)).join(" · ") || "Chưa có nhóm cơ"}
         </span>
         <Link href={`/schedule/${dayKey}`} className="shrink-0 text-sm font-semibold text-accent">
-          Xem chi tiết →
+          Xem chi tiết <Icon name="chevronRight" className="inline size-3.5 align-[-1px]" strokeWidth={2.4} />
         </Link>
       </div>
     </div>

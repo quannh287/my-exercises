@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { prefetchMedia } from "@/lib/media";
+import { Icon } from "@/components/ui/Icon";
 
 export function PrefetchMedia({ urls }: { urls: string[] }) {
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
@@ -18,11 +19,14 @@ export function PrefetchMedia({ urls }: { urls: string[] }) {
 
   return (
     <Button variant="secondary" onClick={start} disabled={running || finished}>
-      {running
-        ? `Đang tải ${progress.done}/${progress.total}…`
-        : finished
-          ? `✓ Đã tải ${progress.total} GIF`
-          : "Tải trước GIF"}
+      <span className="flex items-center justify-center gap-2">
+        {finished ? <Icon name="check" className="size-4" strokeWidth={2.4} /> : null}
+        {running
+          ? `Đang tải ${progress.done}/${progress.total}…`
+          : finished
+            ? `Đã tải ${progress.total} GIF`
+            : "Tải trước GIF"}
+      </span>
     </Button>
   );
 }

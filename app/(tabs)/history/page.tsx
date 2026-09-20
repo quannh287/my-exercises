@@ -5,6 +5,7 @@ import { Chip, Label } from "@/components/ui/Chip";
 import { useStore } from "@/lib/store";
 import { useCatalog } from "@/lib/useCatalog";
 import { historyStats, logMinutes, logSets } from "@/lib/stats";
+import { Icon } from "@/components/ui/Icon";
 
 const fmt = new Intl.DateTimeFormat("vi-VN", { weekday: "long", day: "numeric", month: "numeric" });
 const time = new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" });
@@ -22,15 +23,19 @@ export default function HistoryPage() {
       <section className="mt-5 rounded-card bg-surface p-5 shadow-soft">
         <div className="flex items-center justify-between">
           <Label>Tổng kết hoạt động</Label>
-          <span className="text-xs font-semibold text-accent">✓ Đồng bộ bộ nhớ máy</span>
+          <span className="flex items-center gap-1 text-xs font-semibold text-accent">
+            <Icon name="check" className="size-3.5" strokeWidth={2.4} />
+            Đồng bộ bộ nhớ máy
+          </span>
         </div>
         <div className="mt-3 grid grid-cols-3 gap-2 text-center">
           <Stat value={stats.total} label="Buổi hoàn thành" />
           <Stat value={stats.perWeek} label="Buổi / tuần" />
           <Stat value={`${stats.avgMinutes}′`} label="Trung bình" />
         </div>
-        <p className="mt-3 text-sm text-muted">
-          🔥 Chuỗi tập: {stats.streakWeeks} tuần liên tục
+        <p className="mt-3 flex items-center gap-1.5 text-sm text-muted">
+          <Icon name="flame" className="size-4 text-tertiary" />
+          Chuỗi tập: {stats.streakWeeks} tuần liên tục
         </p>
       </section>
 
@@ -62,7 +67,10 @@ export default function HistoryPage() {
                     </span>
                     <h3 className="mt-0.5 truncate font-serif text-lg font-bold">{log.dayName}</h3>
                   </span>
-                  <Chip tone="accent">🕐 {logMinutes(log)} phút</Chip>
+                  <Chip tone="accent">
+                    <Icon name="clock" className="size-3.5" />
+                    {logMinutes(log)} phút
+                  </Chip>
                 </div>
 
                 <p className="mt-2 text-sm text-muted">
@@ -72,9 +80,11 @@ export default function HistoryPage() {
                 <details className="group mt-2">
                   <summary className="cursor-pointer list-none text-sm font-semibold text-accent">
                     Xem chi tiết bài tập
-                    <span className="float-right transition-transform group-open:rotate-180" aria-hidden>
-                      ⌄
-                    </span>
+                    <Icon
+                      name="chevronDown"
+                      className="float-right size-4 transition-transform group-open:rotate-180"
+                      strokeWidth={2.2}
+                    />
                   </summary>
                   <div className="mt-2 divide-y divide-line/50 rounded-card bg-bg px-3">
                     {log.entries.map((entry, j) => (

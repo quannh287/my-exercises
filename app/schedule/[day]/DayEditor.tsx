@@ -13,6 +13,7 @@ import { setStore, uid, useStore } from "@/lib/store";
 import { useCatalog } from "@/lib/useCatalog";
 import { estimateMinutes } from "@/lib/stats";
 import { countItems, DAY_LABEL, type Block, type Day, type Item, type WeekDay } from "@/lib/types";
+import { Icon, type IconName } from "@/components/ui/Icon";
 
 export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
   const day = useStore().schedule.days[dayKey];
@@ -42,7 +43,9 @@ export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
       <main className="mx-auto flex min-h-dvh max-w-lg flex-col">
         <AppBar title={DAY_LABEL[dayKey]} back="/" />
         <div className="flex flex-1 flex-col items-center justify-center gap-6 px-4 text-center">
-          <span className="grid size-16 place-items-center rounded-full bg-tertiary-soft text-3xl">🌙</span>
+          <span className="grid size-16 place-items-center rounded-full bg-tertiary-soft text-tertiary">
+            <Icon name="moon" className="size-7" strokeWidth={1.6} />
+          </span>
           <p className="text-muted">Ngày này đang để nghỉ.</p>
           <Button onClick={createDay}>Tạo buổi tập</Button>
         </div>
@@ -59,7 +62,10 @@ export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
           <Label>Lịch tập tuần</Label>
           <h1 className="truncate font-serif text-2xl font-bold">Sửa lịch {DAY_LABEL[dayKey]}</h1>
         </span>
-        <Chip tone="accent">✓ Tự động lưu</Chip>
+        <Chip tone="accent">
+          <Icon name="check" className="size-3.5" strokeWidth={2.4} />
+          Tự động lưu
+        </Chip>
       </div>
 
       <div className="mt-4 rounded-card bg-surface p-4 shadow-soft mx-4">
@@ -134,9 +140,7 @@ export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
                       {item.weight ? ` · ${item.weight}kg` : ""} · nghỉ {item.restSec}s
                     </span>
                   </span>
-                  <span className="shrink-0 px-1 text-lg text-muted" aria-hidden>
-                    ⋮
-                  </span>
+                  <Icon name="more" className="size-5 text-muted" strokeWidth={2} />
                 </button>
               );
             })}
@@ -238,10 +242,10 @@ function ItemSheet({
       <h3 className="mt-1 font-serif text-xl font-bold">{name}</h3>
 
       <div className="mt-4 grid grid-cols-4 gap-2">
-        <Tile onClick={() => onMove(-1)} icon="↑" label="Lên" />
-        <Tile onClick={() => onMove(1)} icon="↓" label="Xuống" />
-        <Tile onClick={onDuplicate} icon="⧉" label="Nhân bản" />
-        <Tile onClick={onDelete} icon="🗑" label="Xoá bài" danger />
+        <Tile onClick={() => onMove(-1)} icon="arrowUp" label="Lên" />
+        <Tile onClick={() => onMove(1)} icon="arrowDown" label="Xuống" />
+        <Tile onClick={onDuplicate} icon="copy" label="Nhân bản" />
+        <Tile onClick={onDelete} icon="trash" label="Xoá bài" danger />
       </div>
 
       <div className="mt-3 space-y-2">
@@ -289,7 +293,7 @@ function Tile({
   onClick,
   danger,
 }: {
-  icon: string;
+  icon: IconName;
   label: string;
   onClick: () => void;
   danger?: boolean;
@@ -302,9 +306,7 @@ function Tile({
         danger ? "bg-danger/10 text-danger" : "bg-bg text-ink"
       }`}
     >
-      <span className="text-base" aria-hidden>
-        {icon}
-      </span>
+      <Icon name={icon} className="size-5" />
       {label}
     </button>
   );

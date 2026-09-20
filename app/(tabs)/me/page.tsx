@@ -7,6 +7,7 @@ import { askPermission, canNotify, setReminder } from "@/lib/reminder";
 import { clearStore, exportJson, importJson, useStore } from "@/lib/store";
 import { historyStats } from "@/lib/stats";
 import { countItems, WEEK_DAYS, type Reminder } from "@/lib/types";
+import { Icon } from "@/components/ui/Icon";
 
 export default function MePage() {
   const store = useStore();
@@ -67,7 +68,7 @@ export default function MePage() {
       <section className="mt-4 rounded-card bg-surface p-5 shadow-soft">
         <div className="flex items-center gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-lg" aria-hidden>
-            💾
+            <Icon name="drive" className="size-6" />
           </span>
           <span>
             <h2 className="font-serif text-lg font-bold">Quản lý dữ liệu offline</h2>
@@ -76,12 +77,23 @@ export default function MePage() {
         </div>
 
         <div className="mt-4 space-y-3">
-          <Button onClick={() => void share()}>↗ Chia sẻ dữ liệu sang máy khác</Button>
+          <Button onClick={() => void share()}>
+            <span className="flex items-center justify-center gap-2">
+              <Icon name="share" className="size-5" />
+              Chia sẻ dữ liệu sang máy khác
+            </span>
+          </Button>
           <Button variant="secondary" onClick={download}>
-            ↓ Xuất bản sao lưu (JSON)
+            <span className="flex items-center justify-center gap-2">
+              <Icon name="download" className="size-5" />
+              Xuất bản sao lưu (JSON)
+            </span>
           </Button>
           <Button variant="secondary" onClick={() => fileRef.current?.click()}>
-            ↑ Nhập file sao lưu (JSON)
+            <span className="flex items-center justify-center gap-2">
+              <Icon name="upload" className="size-5" />
+              Nhập file sao lưu (JSON)
+            </span>
           </Button>
           <input
             ref={fileRef}
@@ -150,8 +162,8 @@ function ReminderCard({ reminder }: { reminder: Reminder }) {
   return (
     <section className="mt-4 rounded-card bg-surface p-5 shadow-soft">
       <div className="flex items-center gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-lg" aria-hidden>
-          🔔
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-muted">
+          <Icon name="bell" className="size-5" />
         </span>
         <span className="flex-1">
           <h2 className="font-serif text-lg font-bold">Nhắc trước giờ tập</h2>

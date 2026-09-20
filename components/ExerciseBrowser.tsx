@@ -8,6 +8,7 @@ import { search } from "@/lib/exercises";
 import { bodyPartLabel, equipmentLabel } from "@/lib/labels";
 import { useCatalog } from "@/lib/useCatalog";
 import type { Exercise } from "@/lib/types";
+import { Icon } from "@/components/ui/Icon";
 
 type Props = {
   /** Locks the list to one body part (the block being edited). */
@@ -34,10 +35,7 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
     <>
       <div className="sticky top-13 z-20 border-b border-line/50 bg-bg/95 px-4 py-3 backdrop-blur">
         <div className="flex items-center gap-2 rounded-card bg-surface px-3 shadow-soft">
-          <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-muted" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-            <circle cx="11" cy="11" r="7" />
-            <path d="M20 20l-3.5-3.5" strokeLinecap="round" />
-          </svg>
+          <Icon name="search" className="size-5 text-muted" strokeWidth={2} />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -47,7 +45,7 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
           />
           {q ? (
             <button type="button" onClick={() => setQ("")} aria-label="Xoá tìm kiếm" className="px-1 text-muted">
-              ✕
+              <Icon name="x" className="size-4" />
             </button>
           ) : null}
         </div>
@@ -111,13 +109,11 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
                   }`}
                   aria-hidden
                 >
-                  {isSelected ? "✓" : ""}
+                  {isSelected ? <Icon name="check" className="size-4" strokeWidth={2.4} /> : null}
                 </span>
               ) : (
                 <span className="grid size-7 shrink-0 place-items-center rounded-full bg-bg text-muted" aria-hidden>
-                  <svg viewBox="0 0 8 14" className="size-3" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M1 1l6 6-6 6" strokeLinecap="round" />
-                  </svg>
+                  <Icon name="chevronRight" className="size-3.5" strokeWidth={2} />
                 </span>
               )}
             </>
@@ -184,7 +180,7 @@ function FilterRow({
               onClick={() => onChange(on ? selected.filter((v) => v !== o) : [...selected, o])}
               className={chip(on)}
             >
-              {on ? "✓ " : ""}
+              {on ? <Icon name="check" className="size-3.5" strokeWidth={2.4} /> : null}
               {label(o)}
             </button>
           );
