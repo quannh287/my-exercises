@@ -21,7 +21,7 @@ export function ExerciseDetail({ id }: { id: string }) {
           <div className="aspect-square w-full bg-surface">
             <ExerciseGif src={ex.gifUrl} alt={ex.nameVi} size={640} />
           </div>
-          <h1 className="px-4 pt-5 text-2xl font-bold">{ex.nameVi}</h1>
+          <h1 className="px-4 pt-5 font-serif text-2xl font-bold">{ex.nameVi}</h1>
           <p className="ex-name px-4 pt-1 text-sm text-muted">{ex.name}</p>
 
           <Card className="mx-4 mt-4">
@@ -31,7 +31,7 @@ export function ExerciseDetail({ id }: { id: string }) {
             {ex.secondaryMuscles.length ? <Meta label="Cơ phụ" value={ex.secondaryMuscles.join(", ")} /> : null}
           </Card>
 
-          <h2 className="px-4 pb-2 pt-7 text-xs font-semibold uppercase tracking-wide text-muted">
+          <h2 className="px-4 pb-2 pt-7 font-serif text-base font-semibold text-ink">
             Hướng dẫn
           </h2>
           <Card className="mx-4">
@@ -49,7 +49,7 @@ export function ExerciseDetail({ id }: { id: string }) {
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-3 px-4 py-2.5 not-last:border-b not-last:border-line">
+    <div className="flex gap-3 px-4 py-2.5 not-last:border-b not-last:border-line/50">
       <span className="w-24 shrink-0 text-sm text-muted">{label}</span>
       <span className="flex-1 text-sm capitalize">{value}</span>
     </div>

@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
-/* iOS-style light theme. Single accent, no dark variant — see README. */
+/* Terra — organic light theme. Earthy, warm neutrals, no dark variant — see README. */
 @theme {
-  --color-bg: #f2f2f7;
-  --color-surface: #ffffff;
-  --color-line: #e5e5ea;
-  --color-ink: #000000;
-  --color-muted: #8e8e93;
-  --color-accent: #007aff;
-  --color-accent-soft: #e8f1ff;
-  --color-danger: #ff3b30;
+  --color-bg: #f0ece4;
+  --color-surface: #faf6f0;
+  --color-line: #c4c8bc;
+  --color-ink: #2e3230;
+  --color-muted: #6b6358;
+  --color-accent: #4a7c59;
+  --color-accent-soft: #d8f0de;
+  --color-tertiary: #705c30;
+  --color-tertiary-soft: #f8e0a8;
+  --color-danger: #b83230;
 
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-nunito-sans);
+  --font-serif: var(--font-literata);
   --font-mono: var(--font-geist-mono);
 
-  --radius-card: 1rem;
+  --radius-card: 0.75rem;
+
+  --shadow-soft: 0 4px 20px rgba(46, 50, 48, 0.06);
 }
 
 body {
   background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -45,5 +51,5 @@ textarea {
  */
 .vrow {
   content-visibility: auto;
-  contain-intrinsic-size: auto 84px;
+  contain-intrinsic-size: auto 116px;
 }

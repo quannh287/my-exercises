@@ -1,17 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { AppBar } from "@/components/ui/AppBar";
-import { Card } from "@/components/ui/Card";
-import { ListRow } from "@/components/ui/ListRow";
 import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Chip";
 import { clearStore, exportJson, importJson, useStore } from "@/lib/store";
+import { historyStats } from "@/lib/stats";
 import { countItems, WEEK_DAYS } from "@/lib/types";
 
 export default function MePage() {
   const store = useStore();
   const fileRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const stats = historyStats(store.logs);
 
   const trainingDays = WEEK_DAYS.filter((d) => countItems(store.schedule.days[d]) > 0).length;
 
@@ -34,49 +34,68 @@ export default function MePage() {
   };
 
   return (
-    <main className="mx-auto max-w-lg pb-10">
-      <AppBar title="Tôi" />
+    <main className="mx-auto max-w-lg px-4 pb-10 pt-6">
+      <h1 className="font-serif text-3xl font-bold tracking-tight">Tôi</h1>
+      <p className="mt-1 text-sm text-muted">Hoạt động 100% offline, dữ liệu nằm trên máy bạn</p>
 
-      <Card className="mx-4 mt-5">
-        <ListRow title="Ngày tập mỗi tuần" right={<span className="font-mono tabular-nums">{trainingDays}</span>} />
-        <ListRow title="Buổi đã hoàn thành" right={<span className="font-mono tabular-nums">{store.logs.length}</span>} />
-      </Card>
+      <section className="mt-5 grid grid-cols-3 gap-2 rounded-card bg-surface p-4 text-center shadow-soft">
+        <Stat value={trainingDays} label="Ngày tập / tuần" />
+        <Stat value={stats.total} label="Buổi hoàn thành" />
+        <Stat value={`${stats.streakWeeks}`} label="Tuần liên tục" />
+      </section>
 
-      <div className="mt-8 space-y-3 px-4">
-        <Button variant="secondary" onClick={download}>
-          Xuất dữ liệu (JSON)
-        </Button>
-        <Button variant="secondary" onClick={() => fileRef.current?.click()}>
-          Nhập dữ liệu từ file
-        </Button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="application/json"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            e.target.value = "";
-            if (file) void onFile(file);
-          }}
-        />
-        <Button
-          variant="danger"
-          onClick={() => {
-            if (confirm("Xoá toàn bộ lịch và lịch sử? Không khôi phục được nếu chưa xuất file.")) {
-              clearStore();
-              setMessage("Đã xoá dữ liệu.");
-            }
-          }}
-        >
-          Xoá toàn bộ dữ liệu
-        </Button>
-        {message ? <p className="text-center text-sm text-muted">{message}</p> : null}
-      </div>
+      <section className="mt-4 rounded-card bg-surface p-5 shadow-soft">
+        <div className="flex items-center gap-3">
+          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-lg" aria-hidden>
+            💾
+          </span>
+          <span>
+            <h2 className="font-serif text-lg font-bold">Quản lý dữ liệu offline</h2>
+            <p className="text-sm text-muted">Lưu trữ cục bộ, không cần internet</p>
+          </span>
+        </div>
 
-      <p className="px-4 pt-10 text-center text-xs leading-relaxed text-muted">
-        Dữ liệu chỉ nằm trong trình duyệt này (localStorage). Xoá site data là mất — nhớ xuất file để backup.
-        <br />
+        <div className="mt-4 space-y-3">
+          <Button onClick={download}>↓ Xuất bản sao lưu (JSON)</Button>
+          <Button variant="secondary" onClick={() => fileRef.current?.click()}>
+            ↑ Nhập file sao lưu (JSON)
+          </Button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/json"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              if (file) void onFile(file);
+            }}
+          />
+          <Button
+            variant="danger"
+            onClick={() => {
+              if (confirm("Xoá toàn bộ lịch và lịch sử? Không khôi phục được nếu chưa xuất file.")) {
+                clearStore();
+                setMessage("Đã xoá dữ liệu.");
+              }
+            }}
+          >
+            Xoá toàn bộ dữ liệu ứng dụng
+          </Button>
+          {message ? <p className="text-center text-sm text-muted">{message}</p> : null}
+        </div>
+
+        <div className="mt-4 rounded-card bg-bg p-3">
+          <Label>Cơ chế LocalStorage</Label>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted">
+            Toàn bộ lịch, mức tạ và thiết lập được ghi thẳng vào LocalStorage của thiết bị. Khi đổi trình duyệt
+            hoặc xoá cache, hãy dùng <strong className="font-semibold text-ink">Xuất bản sao lưu</strong> để giữ
+            dữ liệu.
+          </p>
+        </div>
+      </section>
+
+      <p className="px-2 pt-6 text-center text-xs leading-relaxed text-muted">
         Bài tập &amp; hình ảnh từ{" "}
         <a href="https://oss.exercisedb.dev/docs" className="text-accent" target="_blank" rel="noreferrer">
           ExerciseDB
@@ -84,5 +103,14 @@ export default function MePage() {
         .
       </p>
     </main>
+  );
+}
+
+function Stat({ value, label }: { value: number | string; label: string }) {
+  return (
+    <span className="rounded-card bg-bg px-2 py-3">
+      <span className="block font-serif text-2xl font-bold text-accent tabular-nums">{value}</span>
+      <span className="mt-0.5 block text-xs text-muted">{label}</span>
+    </span>
   );
 }

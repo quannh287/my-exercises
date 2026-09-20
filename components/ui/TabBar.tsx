@@ -14,7 +14,7 @@ export function TabBar() {
   const pathname = usePathname();
 
   return (
-    <nav className="safe-b sticky bottom-0 z-40 flex border-t border-line bg-surface/95 backdrop-blur">
+    <nav className="safe-b sticky bottom-0 z-40 flex border-t border-line/60 bg-surface/95 backdrop-blur">
       {TABS.map((tab) => {
         const active = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
         return (

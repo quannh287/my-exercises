@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ExerciseGif } from "@/components/ExerciseGif";
-import { Sheet } from "@/components/ui/Sheet";
+import { Chip, Label } from "@/components/ui/Chip";
 import { search } from "@/lib/exercises";
 import { bodyPartLabel, equipmentLabel } from "@/lib/labels";
 import { useCatalog } from "@/lib/useCatalog";
@@ -21,32 +21,59 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
   const [q, setQ] = useState("");
   const [bodyParts, setBodyParts] = useState<string[]>(bodyPart ? [bodyPart] : []);
   const [equipments, setEquipments] = useState<string[]>([]);
-  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const results = useMemo(
     () => (catalog ? search(catalog, { q, bodyParts, equipments }) : []),
     [catalog, q, bodyParts, equipments],
   );
 
-  const activeFilters = bodyParts.length + equipments.length;
+  const heading =
+    bodyParts.length === 1 ? `Danh mục ${bodyPartLabel(bodyParts[0])}` : "Tất cả bài tập";
 
   return (
     <>
-      <div className="sticky top-13 z-20 flex gap-2 border-b border-line bg-bg/95 px-4 py-2 backdrop-blur">
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Tìm bài (Việt hoặc Anh)"
-          aria-label="Tìm bài tập"
-          className="h-11 min-w-0 flex-1 rounded-full border border-line bg-surface px-4 outline-none focus:border-accent"
+      <div className="sticky top-13 z-20 border-b border-line/50 bg-bg/95 px-4 py-3 backdrop-blur">
+        <div className="flex items-center gap-2 rounded-card bg-surface px-3 shadow-soft">
+          <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-muted" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3.5-3.5" strokeLinecap="round" />
+          </svg>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Tìm theo tên bài tập (Việt hoặc Anh)"
+            aria-label="Tìm bài tập"
+            className="h-12 min-w-0 flex-1 bg-transparent outline-none placeholder:text-muted"
+          />
+          {q ? (
+            <button type="button" onClick={() => setQ("")} aria-label="Xoá tìm kiếm" className="px-1 text-muted">
+              ✕
+            </button>
+          ) : null}
+        </div>
+      </div>
+
+      {bodyPart ? null : (
+        <FilterRow
+          title="Nhóm cơ chính"
+          count={`${catalog?.taxonomy.bodyParts.length ?? 0} nhóm`}
+          options={catalog?.taxonomy.bodyParts ?? []}
+          selected={bodyParts}
+          onChange={setBodyParts}
+          label={bodyPartLabel}
         />
-        <button
-          type="button"
-          onClick={() => setFiltersOpen(true)}
-          className="h-11 shrink-0 rounded-full border border-line bg-surface px-4 text-sm text-accent"
-        >
-          Lọc{activeFilters ? ` (${activeFilters})` : ""}
-        </button>
+      )}
+      <FilterRow
+        title="Dụng cụ tập"
+        options={catalog?.taxonomy.equipments ?? []}
+        selected={equipments}
+        onChange={setEquipments}
+        label={equipmentLabel}
+      />
+
+      <div className="flex items-center gap-2 px-4 pb-2 pt-6">
+        <h2 className="truncate font-serif text-lg font-bold">{heading}</h2>
+        {results.length ? <Chip tone="accent">{results.length} bài</Chip> : null}
       </div>
 
       {error ? (
@@ -58,39 +85,46 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
       {catalog && !results.length ? (
         <p className="px-4 py-10 text-center text-muted">Không có bài nào khớp.</p>
       ) : null}
-      {results.length ? (
-        <p className="px-4 py-2 text-sm text-muted">{results.length} bài</p>
-      ) : null}
 
-      <ul className="divide-y divide-line">
+      <ul className="space-y-3 px-4">
         {results.map((ex) => {
           const isSelected = selected?.has(ex.exerciseId);
           const body = (
             <>
-              <span className="size-14 shrink-0 overflow-hidden rounded-lg">
-                <ExerciseGif src={ex.gifUrl} alt={ex.nameVi} size={112} />
+              <span className="size-20 shrink-0 overflow-hidden rounded-card">
+                <ExerciseGif src={ex.gifUrl} alt={ex.nameVi} size={160} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-base">{ex.nameVi}</span>
-                <span className="ex-name block truncate text-xs text-muted">{ex.name}</span>
-                <span className="block truncate text-sm text-muted">
-                  {ex.bodyParts.map(bodyPartLabel).join(", ")} · {ex.equipments.map(equipmentLabel).join(", ")}
+                <span className="block truncate text-xs text-tertiary">
+                  {ex.equipments.map(equipmentLabel).join(" · ")}
+                </span>
+                <span className="mt-0.5 block truncate font-serif text-base font-semibold">{ex.nameVi}</span>
+                <span className="ex-name block truncate text-sm text-muted">{ex.name}</span>
+                <span className="mt-0.5 block truncate text-xs text-muted">
+                  Nhóm cơ: {ex.bodyParts.map(bodyPartLabel).join(", ")}
                 </span>
               </span>
               {onToggle ? (
                 <span
-                  className={`grid size-6 shrink-0 place-items-center rounded-full border text-xs text-white ${
+                  className={`grid size-7 shrink-0 place-items-center rounded-full border text-sm text-white ${
                     isSelected ? "border-accent bg-accent" : "border-line"
                   }`}
                   aria-hidden
                 >
                   {isSelected ? "✓" : ""}
                 </span>
-              ) : null}
+              ) : (
+                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-bg text-muted" aria-hidden>
+                  <svg viewBox="0 0 8 14" className="size-3" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 1l6 6-6 6" strokeLinecap="round" />
+                  </svg>
+                </span>
+              )}
             </>
           );
 
-          const cls = "flex w-full items-center gap-3 bg-surface px-4 py-2.5 text-left active:bg-line/30";
+          const cls =
+            "flex w-full items-center gap-3 rounded-card bg-surface p-3 text-left shadow-soft active:bg-accent-soft/40";
           return (
             <li key={ex.exerciseId} className="vrow">
               {onToggle ? (
@@ -106,44 +140,41 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
           );
         })}
       </ul>
-
-      <Sheet open={filtersOpen} onClose={() => setFiltersOpen(false)} title="Bộ lọc">
-        <FilterGroup
-          title="Nhóm cơ"
-          options={catalog?.taxonomy.bodyParts ?? []}
-          selected={bodyParts}
-          onChange={setBodyParts}
-          label={bodyPartLabel}
-        />
-        <FilterGroup
-          title="Dụng cụ"
-          options={catalog?.taxonomy.equipments ?? []}
-          selected={equipments}
-          onChange={setEquipments}
-          label={equipmentLabel}
-        />
-      </Sheet>
     </>
   );
 }
 
-function FilterGroup({
+function FilterRow({
   title,
+  count,
   options,
   selected,
   onChange,
   label,
 }: {
   title: string;
+  count?: string;
   options: string[];
   selected: string[];
   onChange: (next: string[]) => void;
   label: (v: string) => string;
 }) {
+  const chip = (on: boolean) =>
+    `flex min-h-10 shrink-0 items-center gap-1 rounded-full px-4 text-sm ${
+      on ? "bg-accent font-semibold text-white" : "bg-surface text-ink"
+    }`;
+
   return (
-    <section className="mb-6">
-      <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">{title}</h3>
-      <div className="flex flex-wrap gap-2">
+    <section className="pt-4">
+      <div className="flex items-center justify-between px-4 pb-2">
+        <Label>{title}</Label>
+        {count ? <span className="text-xs text-accent">{count}</span> : null}
+      </div>
+      {/* Horizontal scroll keeps 28 equipment chips off a six-row wall of text. */}
+      <div className="flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <button type="button" onClick={() => onChange([])} className={chip(!selected.length)}>
+          Tất cả
+        </button>
         {options.map((o) => {
           const on = selected.includes(o);
           return (
@@ -151,10 +182,9 @@ function FilterGroup({
               key={o}
               type="button"
               onClick={() => onChange(on ? selected.filter((v) => v !== o) : [...selected, o])}
-              className={`min-h-11 rounded-full border px-3.5 text-sm ${
-                on ? "border-accent bg-accent text-white" : "border-line bg-surface text-ink"
-              }`}
+              className={chip(on)}
             >
+              {on ? "✓ " : ""}
               {label(o)}
             </button>
           );
