@@ -1,12 +1,11 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Chip";
-import { askPermission, canNotify, setReminder } from "@/lib/reminder";
 import { clearStore, exportJson, importJson, useStore } from "@/lib/store";
 import { historyStats } from "@/lib/stats";
-import { countItems, WEEK_DAYS, type Reminder } from "@/lib/types";
+import { countItems, WEEK_DAYS } from "@/lib/types";
 import { Icon } from "@/components/ui/Icon";
 
 export default function MePage() {
@@ -63,11 +62,9 @@ export default function MePage() {
         <Stat value={`${stats.streakWeeks}`} label="Tuần liên tục" />
       </section>
 
-      <ReminderCard reminder={store.reminder} />
-
       <section className="mt-4 rounded-card bg-surface p-5 shadow-soft">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-lg" aria-hidden>
+          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-muted">
             <Icon name="drive" className="size-6" />
           </span>
           <span>
@@ -138,78 +135,6 @@ export default function MePage() {
         .
       </p>
     </main>
-  );
-}
-
-function ReminderCard({ reminder }: { reminder: Reminder }) {
-  const [asked, setAsked] = useState<NotificationPermission | null>(null);
-  // `null` on the server: Notification.permission only exists in the browser.
-  const permission = useSyncExternalStore(
-    () => () => {},
-    () => asked ?? (canNotify() ? Notification.permission : "denied"),
-    () => null,
-  );
-
-  const enable = async (on: boolean) => {
-    if (on) {
-      const result = await askPermission();
-      setAsked(result);
-      if (result !== "granted") return;
-    }
-    setReminder({ enabled: on });
-  };
-
-  return (
-    <section className="mt-4 rounded-card bg-surface p-5 shadow-soft">
-      <div className="flex items-center gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-muted">
-          <Icon name="bell" className="size-5" />
-        </span>
-        <span className="flex-1">
-          <h2 className="font-serif text-lg font-bold">Nhắc trước giờ tập</h2>
-          <p className="text-sm text-muted">Thông báo ngay trên máy, không qua server</p>
-        </span>
-        <input
-          type="checkbox"
-          aria-label="Bật nhắc giờ tập"
-          className="size-6 accent-accent"
-          checked={reminder.enabled}
-          onChange={(e) => void enable(e.target.checked)}
-        />
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <label className="rounded-card bg-bg px-3 py-2">
-          <Label>Giờ tập</Label>
-          <input
-            type="time"
-            value={reminder.time}
-            onChange={(e) => setReminder({ time: e.target.value })}
-            className="mt-1 w-full bg-transparent font-serif text-lg font-bold tabular-nums outline-none"
-          />
-        </label>
-        <label className="rounded-card bg-bg px-3 py-2">
-          <Label>Nhắc trước</Label>
-          <select
-            value={reminder.leadMin}
-            onChange={(e) => setReminder({ leadMin: Number(e.target.value) })}
-            className="mt-1 w-full bg-transparent font-serif text-lg font-bold outline-none"
-          >
-            {[10, 15, 30, 45, 60].map((m) => (
-              <option key={m} value={m}>
-                {m} phút
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <p className="mt-3 text-sm leading-relaxed text-muted">
-        {permission === "denied"
-          ? "Trình duyệt đang chặn thông báo — bật lại trong cài đặt trang web."
-          : "Chỉ bắn khi app đang mở hoặc vừa được mở lại (không có server push). Cài app ra màn hình chính để nhận đều hơn."}
-      </p>
-    </section>
   );
 }
 

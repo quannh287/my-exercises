@@ -68,24 +68,7 @@ export type Log = {
   entries: LogEntry[];
 };
 
-/** Local reminder before a workout; `time` is "HH:MM" in the device's own timezone. */
-export type Reminder = { enabled: boolean; time: string; leadMin: number };
-
-/** A reminder found more than this late (phone asleep, app closed) is dropped, not fired stale. */
-export const REMINDER_WINDOW_MIN = 45;
-
-/** True inside the [workout time - lead, +REMINDER_WINDOW_MIN] window of that local day. */
-export function isDue(reminder: Reminder, now: Date) {
-  const [h, m] = reminder.time.split(":").map(Number);
-  const due = Math.max(0, h * 60 + m - reminder.leadMin);
-  const nowMin = now.getHours() * 60 + now.getMinutes();
-  return nowMin >= due && nowMin <= due + REMINDER_WINDOW_MIN;
-}
-
-
-export const defaultReminder = (): Reminder => ({ enabled: false, time: "18:00", leadMin: 30 });
-
-export type Store = { schedule: Schedule; logs: Log[]; reminder: Reminder };
+export type Store = { schedule: Schedule; logs: Log[] };
 
 export const todayKey = (d = new Date()): WeekDay => WEEK_DAYS[(d.getDay() + 6) % 7];
 

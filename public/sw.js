@@ -53,13 +53,3 @@ self.addEventListener("fetch", (event) => {
     ),
   );
 });
-
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-  event.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
-      const open = list.find((c) => "focus" in c);
-      return open ? open.focus() : self.clients.openWindow("/");
-    }),
-  );
-});

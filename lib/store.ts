@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { defaultReminder, WEEK_DAYS, type Store, type Schedule, type WeekDay } from "./types";
+import { WEEK_DAYS, type Store, type Schedule, type WeekDay } from "./types";
 
 const KEY = "workout.v1";
 const DB = "workout";
@@ -10,7 +10,7 @@ const emptySchedule = (): Schedule => ({
   days: Object.fromEntries(WEEK_DAYS.map((d) => [d, null])) as Schedule["days"],
 });
 
-export const emptyStore = (): Store => ({ schedule: emptySchedule(), logs: [], reminder: defaultReminder() });
+export const emptyStore = (): Store => ({ schedule: emptySchedule(), logs: [] });
 
 function parse(raw: string | null): Store {
   if (!raw) return emptyStore();
@@ -20,7 +20,6 @@ function parse(raw: string | null): Store {
     return {
       schedule: { days },
       logs: Array.isArray(parsed.logs) ? parsed.logs : [],
-      reminder: { ...defaultReminder(), ...parsed.reminder },
     };
   } catch {
     return emptyStore(); // corrupt payload beats a blank screen; the user can re-import
