@@ -51,10 +51,6 @@ export default function SchedulePage() {
           Bắt đầu buổi {DAY_LABEL[today].toLowerCase()}
         </Link>
       ) : null}
-
-      <Link href="/history" className="mt-4 block text-center text-base text-accent">
-        Lịch sử tập
-      </Link>
     </main>
   );
 }

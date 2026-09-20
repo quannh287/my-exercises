@@ -13,7 +13,7 @@ export default function HistoryPage() {
 
   return (
     <main className="mx-auto max-w-lg pb-10">
-      <AppBar title="Lịch sử tập" back="/" />
+      <AppBar title="Lịch sử tập" />
 
       {!logs.length ? (
         <p className="px-4 py-16 text-center text-muted">Chưa có buổi tập nào được ghi lại.</p>

@@ -40,7 +40,6 @@ export default function MePage() {
       <Card className="mx-4 mt-5">
         <ListRow title="Ngày tập mỗi tuần" right={<span className="font-mono tabular-nums">{trainingDays}</span>} />
         <ListRow title="Buổi đã hoàn thành" right={<span className="font-mono tabular-nums">{store.logs.length}</span>} />
-        <ListRow title="Lịch sử tập" href="/history" />
       </Card>
 
       <div className="mt-8 space-y-3 px-4">
