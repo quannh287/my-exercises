@@ -1,49 +1,61 @@
 const BODY_PART: Record<string, string> = {
+  arms: "Tay",
   back: "Lưng",
-  cardio: "Cardio",
+  calves: "Bắp chân",
   chest: "Ngực",
-  "lower arms": "Cẳng tay",
-  "lower legs": "Bắp chân",
-  neck: "Cổ",
+  core: "Core / Bụng",
+  legs: "Đùi",
   shoulders: "Vai",
-  "upper arms": "Tay trên",
-  "upper legs": "Đùi",
-  waist: "Core / Bụng",
 };
 
 const EQUIPMENT: Record<string, string> = {
-  assisted: "Có hỗ trợ",
-  band: "Dây thun",
+  bands: "Dây thun",
   barbell: "Thanh đòn",
-  "body weight": "Tay không",
-  "bosu ball": "Bosu ball",
+  "body only": "Tay không",
   cable: "Cáp",
   dumbbell: "Tạ đơn",
-  "elliptical machine": "Máy elliptical",
-  "ez barbell": "Thanh EZ",
-  hammer: "Búa tạ",
-  kettlebell: "Tạ ấm",
-  "leverage machine": "Máy đòn bẩy",
+  "e-z curl bar": "Thanh EZ",
+  "exercise ball": "Bóng thăng bằng",
+  "foam roll": "Con lăn",
+  kettlebells: "Tạ ấm",
+  machine: "Máy",
   "medicine ball": "Bóng tạ",
-  "olympic barbell": "Thanh Olympic",
-  "resistance band": "Dây kháng lực",
-  roller: "Con lăn",
-  rope: "Dây thừng",
-  "skierg machine": "Máy SkiErg",
-  "sled machine": "Máy đẩy xe",
-  "smith machine": "Máy Smith",
-  "stability ball": "Bóng thăng bằng",
-  "stationary bike": "Xe đạp tại chỗ",
-  "stepmill machine": "Máy leo bậc",
-  tire: "Lốp xe",
-  "trap bar": "Thanh trap",
-  "upper body ergometer": "Máy tay quay",
-  weighted: "Có thêm tạ",
-  "wheel roller": "Bánh xe lăn",
+  other: "Khác",
 };
+
+const MUSCLE: Record<string, string> = {
+  abdominals: "Cơ bụng",
+  abductors: "Cơ dạng",
+  adductors: "Cơ khép",
+  biceps: "Cơ tay trước",
+  calves: "Bắp chân",
+  chest: "Cơ ngực",
+  forearms: "Cẳng tay",
+  glutes: "Cơ mông",
+  hamstrings: "Cơ đùi sau",
+  lats: "Cơ xô",
+  "lower back": "Thắt lưng",
+  "middle back": "Lưng giữa",
+  neck: "Cổ",
+  quadriceps: "Cơ đùi trước",
+  shoulders: "Cơ vai",
+  traps: "Cơ thang",
+  triceps: "Cơ tay sau",
+};
+
+const LEVEL: Record<number, string> = { 1: "Cơ bản", 2: "Trung cấp", 3: "Nâng cao" };
+
+const BLOCK_KIND: Record<string, string> = {
+  warmup: "Khởi động",
+  main: "Bài chính",
+  cooldown: "Giãn cơ",
+};
+
+const MECHANIC: Record<string, string> = { compound: "Đa khớp", isolation: "Cô lập" };
 
 export const bodyPartLabel = (v: string) => BODY_PART[v] ?? v;
 export const equipmentLabel = (v: string) => EQUIPMENT[v] ?? v;
-
-/** Instructions arrive as "Step:1 Lie face down…" with the marker glued to the text. */
-export const cleanInstruction = (v: string) => v.replace(/^Step:\d+\s*/, "");
+export const muscleLabel = (v: string) => MUSCLE[v] ?? v;
+export const levelLabel = (v: number) => LEVEL[v] ?? `Cấp ${v}`;
+export const blockKindLabel = (v: string) => BLOCK_KIND[v] ?? v;
+export const mechanicLabel = (v: string | null) => (v ? MECHANIC[v] ?? v : null);

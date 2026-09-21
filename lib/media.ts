@@ -1,7 +1,7 @@
 /**
- * Warms the service worker cache with exercise GIFs.
- * Uses `new Image()` rather than `fetch()`: the CDN sends no CORS header, so a plain fetch fails,
- * and an image request is byte-for-byte what <img> will later ask for — so the SW caches the right entry.
+ * Warms the service worker cache with exercise images.
+ * Uses `new Image()` rather than `fetch()`: the request is then byte-for-byte what <img> will later
+ * ask for, so the service worker caches the entry the app actually reads back.
  */
 export async function prefetchMedia(
   urls: string[],

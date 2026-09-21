@@ -22,21 +22,35 @@ export const DAY_SHORT: Record<WeekDay, string> = {
   sun: "CN",
 };
 
+export type Level = 1 | 2 | 3;
+export const LEVELS: Level[] = [1, 2, 3];
+
+/** Loại bài, lấy từ `category` của free-exercise-db. */
+export type ExerciseKind = "main" | "warmup" | "stretch";
+
 /** The list-view slice, served by /data/catalog.json. */
 export type Exercise = {
   exerciseId: string;
-  /** English, as it comes from ExerciseDB. */
+  /** English, as it comes from free-exercise-db. */
   name: string;
   /** Vietnamese, merged in at build time; falls back to `name`. */
   nameVi: string;
-  gifUrl: string;
+  /** Ảnh tư thế đầu và cuối động tác. */
+  imageUrls: string[];
   bodyParts: string[];
   equipments: string[];
   targetMuscles: string[];
+  level: Level;
+  kind: ExerciseKind;
 };
 
 /** The heavy per-exercise rest, served by /data/details.json only when one is opened. */
-export type Details = { secondaryMuscles: string[]; instructionsVi: string[] };
+export type Details = {
+  secondaryMuscles: string[];
+  instructionsVi: string[];
+  mechanic: string | null;
+  force: string | null;
+};
 
 export type Item = {
   id: string;
@@ -46,10 +60,17 @@ export type Item = {
   restSec: number;
   /** Kilograms. Optional so schedules saved before this field still parse. */
   weight?: number;
+  /** Giây giữ tư thế. Có giá trị = bài tính theo thời gian, `reps` bị bỏ qua. */
+  holdSec?: number;
   note?: string;
 };
 
-export type Block = { id: string; bodyPart: string; items: Item[] };
+export type BlockKind = "warmup" | "main" | "cooldown";
+
+export const BLOCK_KINDS: BlockKind[] = ["warmup", "main", "cooldown"];
+
+/** `bodyPart` chỉ có ở khối bài chính — khởi động và giãn cơ không thuộc nhóm cơ nào. */
+export type Block = { id: string; kind: BlockKind; bodyPart?: string; items: Item[] };
 
 /** `null` means a rest day. */
 export type Day = { name: string; blocks: Block[] };
@@ -98,6 +119,12 @@ const obj = (v: unknown, where: string): Record<string, unknown> => {
   return v as Record<string, unknown>;
 };
 
+/** Giá trị phải nằm trong tập cho phép — `str()` trần sẽ để lọt chuỗi rác vào store. */
+const oneOf = <T extends string>(v: unknown, allowed: readonly T[], where: string): T => {
+  if (typeof v !== "string" || !allowed.includes(v as T)) throw new BadBackup(where);
+  return v as T;
+};
+
 const arr = (v: unknown, where: string): unknown[] => {
   if (!Array.isArray(v)) throw new BadBackup(where);
   return v;
@@ -112,6 +139,7 @@ function readItem(raw: unknown, where: string): Item {
     reps: num(o.reps, `${where}.reps`, 1),
     restSec: num(o.restSec, `${where}.restSec`, 0),
     ...(o.weight === undefined ? {} : { weight: num(o.weight, `${where}.weight`, 0) }),
+    ...(o.holdSec === undefined ? {} : { holdSec: num(o.holdSec, `${where}.holdSec`, 1) }),
     ...(o.note === undefined ? {} : { note: str(o.note, `${where}.note`) }),
   };
 }
@@ -125,7 +153,11 @@ function readDay(raw: unknown, where: string): Day | null {
       const block = obj(b, `${where}.blocks[${i}]`);
       return {
         id: str(block.id, `${where}.blocks[${i}].id`),
-        bodyPart: str(block.bodyPart, `${where}.blocks[${i}].bodyPart`),
+        // Lịch lưu trước khi có khối khởi động/giãn cơ chỉ toàn bài chính.
+        kind: oneOf(block.kind ?? "main", BLOCK_KINDS, `${where}.blocks[${i}].kind`),
+        ...(block.bodyPart === undefined
+          ? {}
+          : { bodyPart: str(block.bodyPart, `${where}.blocks[${i}].bodyPart`) }),
         items: arr(block.items, `${where}.blocks[${i}].items`).map((it, j) =>
           readItem(it, `${where}.blocks[${i}].items[${j}]`),
         ),

@@ -4,11 +4,11 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Chip, Label } from "@/components/ui/Chip";
-import { ExerciseGif } from "@/components/ExerciseGif";
+import { ExerciseImage } from "@/components/ExerciseImage";
 import { RestTimer } from "@/components/RestTimer";
 import { Sheet } from "@/components/ui/Sheet";
 import { Stepper } from "@/components/ui/Stepper";
-import { equipmentLabel } from "@/lib/labels";
+import { equipmentLabel, muscleLabel } from "@/lib/labels";
 import { setStore, uid, useStore } from "@/lib/store";
 import { lastWeight, logVolume, volumeDelta } from "@/lib/stats";
 import { useCatalog, useDetails } from "@/lib/useCatalog";
@@ -26,7 +26,8 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
   const [startedAt] = useState(() => Date.now());
   const [finishedLog, setFinishedLog] = useState<Log | null>(null);
   const [progress, setProgress] = useState<Progress>(startProgress);
-  const [rest, setRest] = useState<{ until: number; total: number } | null>(null);
+  // Một slot đồng hồ dùng cho cả hai việc: nghỉ giữa set, và giữ tư thế của bài giãn cơ.
+  const [timer, setTimer] = useState<{ until: number; total: number; mode: "rest" | "hold" } | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
 
   const { index, setsDone } = progress;
@@ -56,9 +57,15 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
   const completeSet = () => {
     const { next, rest: restSec, finished: done } = advance(items, progress);
     setProgress(next);
+    setTimer(null);
     if (done) saveLog(next.entries);
-    else if (restSec > 0) setRest({ until: Date.now() + restSec * 1000, total: restSec });
+    else if (restSec > 0) setTimer({ until: Date.now() + restSec * 1000, total: restSec, mode: "rest" });
   };
+
+  // `holdSec` chỉ được gán cho bài khởi động/giãn cơ lúc chọn bài, nên nó là tín hiệu đủ để đổi UI.
+  const holdSec = item?.holdSec;
+  const startHold = () =>
+    holdSec && setTimer({ until: Date.now() + holdSec * 1000, total: holdSec, mode: "hold" });
 
   if (!day || !items.length) {
     return (
@@ -140,7 +147,7 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
       <div className="px-4 pt-4">
         <div className="relative overflow-hidden rounded-card bg-surface shadow-soft">
           <div className="aspect-[4/3] w-full">
-            {exercise ? <ExerciseGif src={exercise.gifUrl} alt={exercise.nameVi} size={640} /> : null}
+            {exercise ? <ExerciseImage srcs={exercise.imageUrls} alt={exercise.nameVi} size={640} /> : null}
           </div>
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-ink/80 to-transparent p-4">
             <span className="min-w-0">
@@ -148,7 +155,7 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
                 Mục tiêu chính
               </span>
               <span className="block truncate font-serif text-base font-bold capitalize text-white">
-                {exercise?.targetMuscles.join(", ") ?? "—"}
+                {exercise?.targetMuscles.map(muscleLabel).join(", ") ?? "—"}
               </span>
             </span>
             <button
@@ -171,10 +178,11 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
           </p>
         </span>
         <Chip>
-          {item.sets} hiệp{item.weight ? ` · ${item.weight}kg` : ""}
+          {item.sets} hiệp{holdSec ? ` · giữ ${holdSec}s` : item.weight ? ` · ${item.weight}kg` : ""}
         </Chip>
       </div>
 
+      {holdSec ? null : (
       <div className="px-4 pt-4">
         <Stepper
           label="Tạ"
@@ -186,6 +194,7 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
           ghost={lastWeight(store.logs, item.exerciseId)}
         />
       </div>
+      )}
 
       <div className="flex items-center justify-between px-4 pb-2 pt-5">
         <Label>Chi tiết các hiệp</Label>
@@ -211,7 +220,9 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
               </span>
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2">
-                  <span className="truncate font-semibold">{item.reps} lần lặp</span>
+                  <span className="truncate font-semibold">
+                    {holdSec ? `Giữ ${holdSec} giây` : `${item.reps} lần lặp`}
+                  </span>
                   {state === "current" ? (
                     <span className="rounded-full bg-white/20 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide">
                       Hiện tại
@@ -239,43 +250,56 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
         })}
       </ol>
 
-      {rest ? (
+      {timer ? (
         <section className="mx-4 mt-5 rounded-card bg-surface p-5 text-center shadow-soft">
           <div className="flex items-center justify-between">
-            <Label>Đồng hồ nghỉ hồi phục</Label>
-            <span className="text-sm text-muted">Chuẩn bị set {setsDone + 1}</span>
+            <Label>{timer.mode === "hold" ? "Đang giữ tư thế" : "Đồng hồ nghỉ hồi phục"}</Label>
+            <span className="text-sm text-muted">
+              {timer.mode === "hold" ? `Set ${setsDone + 1}/${item.sets}` : `Chuẩn bị set ${setsDone + 1}`}
+            </span>
           </div>
           <div className="mt-4 flex justify-center">
-            <RestTimer until={rest.until} total={rest.total} onDone={() => setRest(null)} />
+            <RestTimer
+              until={timer.until}
+              total={timer.total}
+              // Hết giờ giữ là coi như xong set — không bắt bấm thêm một nút nữa khi tay đang bận giữ tư thế.
+              onDone={() => (timer.mode === "hold" ? completeSet() : setTimer(null))}
+            />
           </div>
           <p className="mx-auto mt-4 max-w-xs text-sm leading-relaxed text-muted">
-            Thả lỏng, hít thở sâu và nhấp một ngụm nước trước khi vào set tiếp theo.
+            {timer.mode === "hold"
+              ? "Giữ nguyên tư thế, thở đều, không nín hơi và không bật nhún."
+              : "Thả lỏng, hít thở sâu và nhấp một ngụm nước trước khi vào set tiếp theo."}
           </p>
           <div className="mt-4 flex gap-3">
             <Button
               variant="secondary"
-              onClick={() => setRest((r) => (r ? { until: r.until + 30_000, total: r.total + 30 } : r))}
+              onClick={() => setTimer((t) => (t ? { ...t, until: t.until + 30_000, total: t.total + 30 } : t))}
             >
               +30 giây
             </Button>
-            <Button variant="secondary" onClick={() => setRest(null)}>
-              Bỏ qua nghỉ
+            <Button variant="secondary" onClick={timer.mode === "hold" ? completeSet : () => setTimer(null)}>
+              {timer.mode === "hold" ? "Xong sớm" : "Bỏ qua nghỉ"}
             </Button>
           </div>
         </section>
       ) : null}
 
-      <div className="safe-b sticky bottom-0 mt-6 bg-bg/95 px-4 pb-4 pt-3 backdrop-blur">
-        <Button onClick={completeSet}>
-          <span className="flex items-center justify-center gap-2">
-            <Icon name="check" className="size-5" strokeWidth={2.4} />
-            Hoàn thành set {setsDone + 1}
-          </span>
-        </Button>
-        <p className="mt-2 text-center text-xs text-muted">
-          Tự động đếm ngược {item.restSec} giây sau khi bấm
-        </p>
-      </div>
+      {timer?.mode === "hold" ? null : (
+        <div className="safe-b sticky bottom-0 mt-6 bg-bg/95 px-4 pb-4 pt-3 backdrop-blur">
+          <Button onClick={holdSec ? startHold : completeSet}>
+            <span className="flex items-center justify-center gap-2">
+              <Icon name={holdSec ? "play" : "check"} className="size-5" strokeWidth={2.4} />
+              {holdSec ? `Bắt đầu giữ ${holdSec} giây` : `Hoàn thành set ${setsDone + 1}`}
+            </span>
+          </Button>
+          <p className="mt-2 text-center text-xs text-muted">
+            {holdSec
+              ? `Hết ${holdSec} giây là tự tính xong set`
+              : `Tự động đếm ngược ${item.restSec} giây sau khi bấm`}
+          </p>
+        </div>
+      )}
 
       <Sheet open={guideOpen} onClose={() => setGuideOpen(false)} title={exercise?.nameVi ?? "Hướng dẫn"}>
         <ol className="list-inside list-decimal space-y-2 text-base leading-relaxed">

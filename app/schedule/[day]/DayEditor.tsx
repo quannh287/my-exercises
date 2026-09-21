@@ -1,21 +1,32 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AppBar } from "@/components/ui/AppBar";
 import { Button } from "@/components/ui/Button";
 import { Chip, Label } from "@/components/ui/Chip";
-import { ExerciseGif } from "@/components/ExerciseGif";
+import { ExerciseImage } from "@/components/ExerciseImage";
 import { Sheet } from "@/components/ui/Sheet";
 import { Stepper } from "@/components/ui/Stepper";
-import { bodyPartLabel } from "@/lib/labels";
+import { insertBlock, sections } from "@/lib/blocks";
+import { blockKindLabel, bodyPartLabel } from "@/lib/labels";
 import { setStore, uid, useStore } from "@/lib/store";
 import { useCatalog } from "@/lib/useCatalog";
 import { estimateMinutes } from "@/lib/stats";
-import { countItems, DAY_LABEL, type Block, type Day, type Item, type WeekDay } from "@/lib/types";
+import {
+  countItems,
+  DAY_LABEL,
+  type Block,
+  type BlockKind,
+  type Day,
+  type Item,
+  type WeekDay,
+} from "@/lib/types";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
 export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
+  const router = useRouter();
   const day = useStore().schedule.days[dayKey];
   const { catalog } = useCatalog();
   const [editing, setEditing] = useState<{ blockId: string; item: Item } | null>(null);
@@ -28,6 +39,14 @@ export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
 
   const mapItems = (blockId: string, fn: (items: Item[]) => Item[]) =>
     mapBlocks((bs) => bs.map((b) => (b.id === blockId ? { ...b, items: fn(b.items) } : b)));
+
+  /** Khối khởi động/giãn cơ chỉ sinh ra khi người dùng thật sự thêm bài vào đó. */
+  const addToBlock = (kind: BlockKind) => {
+    const existing = day?.blocks.find((b) => b.kind === kind);
+    const id = existing?.id ?? uid();
+    if (!existing) mapBlocks((bs) => insertBlock(bs, { id, kind, items: [] }));
+    router.push(`/schedule/${dayKey}/pick?block=${id}&kind=${kind}`);
+  };
 
   const setRestDay = () =>
     setStore((s) => ({ ...s, schedule: { days: { ...s.schedule.days, [dayKey]: null } } }));
@@ -102,33 +121,48 @@ export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
         </button>
       </div>
 
-      {day.blocks.map((block) => (
-        <section key={block.id} className="px-4">
+      {sections(day).map(({ kind, block }) => (
+        <section key={block?.id ?? kind} className="px-4">
           <div className="flex items-center gap-2 pb-2 pt-7">
-            <span className="size-2.5 shrink-0 rounded-full bg-accent" aria-hidden />
-            <h2 className="truncate font-serif text-lg font-bold">{bodyPartLabel(block.bodyPart)}</h2>
-            <Chip>{block.items.length} bài</Chip>
+            <span
+              className={`size-2.5 shrink-0 rounded-full ${kind === "main" ? "bg-accent" : "bg-tertiary"}`}
+              aria-hidden
+            />
+            <h2 className="truncate font-serif text-lg font-bold">
+              {kind === "main" ? bodyPartLabel(block?.bodyPart ?? "") : blockKindLabel(kind)}
+            </h2>
+            <Chip>{block?.items.length ?? 0} bài</Chip>
             <span className="flex-1" />
-            <Link
-              href={`/schedule/${dayKey}/pick?block=${block.id}&bodyPart=${encodeURIComponent(block.bodyPart)}`}
-              className="shrink-0 text-sm font-semibold text-accent"
-            >
-              + Thêm bài
-            </Link>
+            {block && kind === "main" ? (
+              <Link
+                href={`/schedule/${dayKey}/pick?block=${block.id}&bodyPart=${encodeURIComponent(block.bodyPart ?? "")}`}
+                className="shrink-0 text-sm font-semibold text-accent"
+              >
+                + Thêm bài
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => addToBlock(kind)}
+                className="shrink-0 text-sm font-semibold text-accent"
+              >
+                + Thêm bài
+              </button>
+            )}
           </div>
 
           <div className="space-y-2">
-            {block.items.map((item) => {
+            {(block?.items ?? []).map((item) => {
               const ex = catalog?.byId.get(item.exerciseId);
               return (
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => setEditing({ blockId: block.id, item })}
+                  onClick={() => setEditing({ blockId: block!.id, item })}
                   className="flex w-full items-center gap-3 rounded-card bg-surface p-3 text-left shadow-soft active:bg-accent-soft/40"
                 >
                   <span className="size-14 shrink-0 overflow-hidden rounded-card">
-                    {ex ? <ExerciseGif src={ex.gifUrl} alt={ex.nameVi} size={112} /> : null}
+                    {ex ? <ExerciseImage srcs={ex.imageUrls} alt={ex.nameVi} size={112} /> : null}
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-serif text-base font-semibold">
@@ -136,7 +170,7 @@ export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
                     </span>
                     <span className="ex-name block truncate text-xs text-muted">{ex?.name}</span>
                     <span className="mt-0.5 block font-mono text-sm text-muted tabular-nums">
-                      {item.sets} × {item.reps}
+                      {item.holdSec ? `${item.sets} × giữ ${item.holdSec}s` : `${item.sets} × ${item.reps}`}
                       {item.weight ? ` · ${item.weight}kg` : ""} · nghỉ {item.restSec}s
                     </span>
                   </span>
@@ -145,20 +179,22 @@ export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
               );
             })}
 
-            {!block.items.length ? (
+            {!block?.items.length ? (
               <p className="rounded-card bg-surface px-4 py-6 text-center text-sm text-muted shadow-soft">
-                Nhóm này chưa có bài nào.
+                {kind === "main" ? "Nhóm này chưa có bài nào." : `Chưa có bài ${blockKindLabel(kind).toLowerCase()}.`}
               </p>
             ) : null}
           </div>
 
-          <button
-            type="button"
-            className="mt-2 text-sm text-danger"
-            onClick={() => mapBlocks((bs) => bs.filter((b) => b.id !== block.id))}
-          >
-            Xoá nhóm {bodyPartLabel(block.bodyPart)}
-          </button>
+          {block && kind === "main" ? (
+            <button
+              type="button"
+              className="mt-2 text-sm text-danger"
+              onClick={() => mapBlocks((bs) => bs.filter((b) => b.id !== block.id))}
+            >
+              Xoá nhóm {bodyPartLabel(block.bodyPart ?? "")}
+            </button>
+          ) : null}
         </section>
       ))}
 
@@ -170,7 +206,7 @@ export function DayEditor({ dayKey }: { dayKey: WeekDay }) {
               type="button"
               className="flex min-h-13 w-full items-center px-4 text-left text-base not-last:border-b not-last:border-line/50 active:bg-accent-soft/40"
               onClick={() => {
-                mapBlocks((bs) => [...bs, { id: uid(), bodyPart: bp, items: [] }]);
+                mapBlocks((bs) => insertBlock(bs, { id: uid(), kind: "main", bodyPart: bp, items: [] }));
                 setAddingBlock(false);
               }}
             >
@@ -311,3 +347,4 @@ function Tile({
     </button>
   );
 }
+

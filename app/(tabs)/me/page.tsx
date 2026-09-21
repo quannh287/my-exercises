@@ -132,9 +132,15 @@ export default function MePage() {
 
       <p className="px-2 pt-6 text-center text-xs leading-relaxed text-muted">
         Bài tập &amp; hình ảnh từ{" "}
-        <a href="https://oss.exercisedb.dev/docs" className="text-accent" target="_blank" rel="noreferrer">
-          ExerciseDB
-        </a>
+        <a
+          href="https://github.com/yuhonas/free-exercise-db"
+          className="text-accent"
+          target="_blank"
+          rel="noreferrer"
+        >
+          free-exercise-db
+        </a>{" "}
+        (public domain)
         .
       </p>
     </main>

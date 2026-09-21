@@ -28,14 +28,14 @@ export const logMinutes = (l: Log) => Math.max(1, Math.round((l.finishedAt - l.s
 export const logSets = (l: Log) => l.entries.reduce((n, e) => n + e.setsDone, 0);
 
 /**
- * ponytail: rest + ~40s of work per set. Rough, but beats showing no estimate at all;
+ * ponytail: rest + thời gian giữ, hoặc ~40s làm việc mỗi set khi không tính theo giây. Rough, but beats showing no estimate at all;
  * swap for measured per-exercise averages from the logs if it ever matters.
  */
 export function estimateMinutes(day: Day | null): number {
   if (!day) return 0;
   const seconds = day.blocks
     .flatMap((b) => b.items)
-    .reduce((s, i) => s + i.sets * (i.restSec + 40), 0);
+    .reduce((s, i) => s + i.sets * (i.restSec + (i.holdSec ?? 40)), 0);
   return Math.max(1, Math.round(seconds / 60));
 }
 

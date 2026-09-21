@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { validateStore, WEEK_DAYS, type Store, type Schedule, type WeekDay } from "./types";
 
-const KEY = "workout.v1";
+const KEY = "workout.v2"; // v1 trỏ id ExerciseDB, đổi nguồn dữ liệu nên bỏ hẳn thay vì hiện một buổi tập toàn bài lạ
 const DB = "workout";
 
 const emptySchedule = (): Schedule => ({

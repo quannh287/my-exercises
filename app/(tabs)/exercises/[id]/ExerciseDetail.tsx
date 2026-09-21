@@ -2,8 +2,8 @@
 
 import { AppBar } from "@/components/ui/AppBar";
 import { Card } from "@/components/ui/Card";
-import { ExerciseGif } from "@/components/ExerciseGif";
-import { bodyPartLabel, equipmentLabel } from "@/lib/labels";
+import { ExerciseImage } from "@/components/ExerciseImage";
+import { bodyPartLabel, equipmentLabel, levelLabel, mechanicLabel, muscleLabel } from "@/lib/labels";
 import { useCatalog, useDetails } from "@/lib/useCatalog";
 
 export function ExerciseDetail({ id }: { id: string }) {
@@ -20,16 +20,23 @@ export function ExerciseDetail({ id }: { id: string }) {
       {ex ? (
         <>
           <div className="aspect-square w-full bg-surface">
-            <ExerciseGif src={ex.gifUrl} alt={ex.nameVi} size={640} />
+            <ExerciseImage srcs={ex.imageUrls} alt={ex.nameVi} size={640} />
           </div>
           <h1 className="px-4 pt-5 font-serif text-2xl font-bold">{ex.nameVi}</h1>
           <p className="ex-name px-4 pt-1 text-sm text-muted">{ex.name}</p>
 
           <Card className="mx-4 mt-4">
+            <Meta label="Cấp độ" value={levelLabel(ex.level)} />
             <Meta label="Nhóm cơ" value={ex.bodyParts.map(bodyPartLabel).join(", ")} />
             <Meta label="Dụng cụ" value={ex.equipments.map(equipmentLabel).join(", ")} />
-            <Meta label="Cơ chính" value={ex.targetMuscles.join(", ")} />
-            {details?.secondaryMuscles.length ? <Meta label="Cơ phụ" value={details.secondaryMuscles.join(", ")} /> : null}
+            <Meta label="Cơ chính" value={ex.targetMuscles.map(muscleLabel).join(", ")} />
+            {details?.secondaryMuscles.length ? (
+              <Meta label="Cơ phụ" value={details.secondaryMuscles.map(muscleLabel).join(", ")} />
+            ) : null}
+            {/* Đa khớp hay cô lập là thứ để biết hai bài có trùng kiểu chuyển động hay không. */}
+            {mechanicLabel(details?.mechanic ?? null) ? (
+              <Meta label="Kiểu" value={mechanicLabel(details!.mechanic)!} />
+            ) : null}
           </Card>
 
           <h2 className="px-4 pb-2 pt-7 font-serif text-base font-semibold text-ink">

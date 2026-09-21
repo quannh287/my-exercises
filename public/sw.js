@@ -1,11 +1,11 @@
-// Cache-first for the two things that make the app work offline: the bundled catalog and the GIFs already seen.
-const CACHE = "workout-v4";
+// Cache-first for the two things that make the app work offline: the bundled catalog and the exercise images already seen.
+const CACHE = "workout-v5";
 const CACHE_FIRST = (url) =>
   url.pathname.startsWith("/data/") ||
   url.pathname.startsWith("/_next/static/") ||
-  url.hostname === "static.exercisedb.dev";
+  url.hostname === "cdn.jsdelivr.net";
 
-// The GIF CDN sends no CORS header, so <img> requests come back opaque (status 0, ok === false) — still worth storing.
+// jsdelivr gửi CORS nên phần lớn response là ok; giữ nhánh opaque phòng khi <img> đi đường no-cors.
 const storable = (res) => res.ok || res.type === "opaque";
 
 self.addEventListener("install", () => self.skipWaiting());

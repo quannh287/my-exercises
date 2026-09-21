@@ -3,87 +3,92 @@
     "days": {
       "mon": null,
       "tue": {
-        "name": "Upper emphasis",
+        "name": "Ngực & tay",
         "blocks": [
           {
-            "id": "seed002",
+            "id": "b-tue-w",
+            "kind": "warmup",
+            "items": [
+              {
+                "id": "i01",
+                "exerciseId": "Jogging_Treadmill",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 30,
+                "holdSec": 240
+              },
+              {
+                "id": "i02",
+                "exerciseId": "Dynamic_Chest_Stretch",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 15,
+                "holdSec": 30
+              }
+            ]
+          },
+          {
+            "id": "b-tue-c",
+            "kind": "main",
             "bodyPart": "chest",
             "items": [
               {
-                "id": "seed001",
-                "exerciseId": "EIeI8Vf",
+                "id": "i03",
+                "exerciseId": "Barbell_Bench_Press_-_Medium_Grip",
                 "sets": 3,
                 "reps": 10,
                 "restSec": 90,
                 "note": "Bài chính - tăng tạ khi đủ 3x12"
-              }
-            ]
-          },
-          {
-            "id": "seed005",
-            "bodyPart": "back",
-            "items": [
+              },
               {
-                "id": "seed003",
-                "exerciseId": "LEprlgG",
+                "id": "i04",
+                "exerciseId": "Incline_Dumbbell_Press",
                 "sets": 3,
-                "reps": 10,
-                "restSec": 90
-              },
-              {
-                "id": "seed004",
-                "exerciseId": "fUBheHs",
-                "sets": 2,
-                "reps": 12,
-                "restSec": 75
-              }
-            ]
-          },
-          {
-            "id": "seed007",
-            "bodyPart": "shoulders",
-            "items": [
-              {
-                "id": "seed006",
-                "exerciseId": "dRTfGZT",
-                "sets": 2,
-                "reps": 14,
-                "restSec": 60,
-                "note": "Nhẹ tạ, kiểm soát"
-              }
-            ]
-          },
-          {
-            "id": "seed010",
-            "bodyPart": "upper arms",
-            "items": [
-              {
-                "id": "seed008",
-                "exerciseId": "G08RZcQ",
-                "sets": 2,
-                "reps": 12,
-                "restSec": 60
-              },
-              {
-                "id": "seed009",
-                "exerciseId": "3ZflifB",
-                "sets": 2,
                 "reps": 12,
                 "restSec": 60
               }
             ]
           },
           {
-            "id": "seed012",
-            "bodyPart": "waist",
+            "id": "b-tue-a",
+            "kind": "main",
+            "bodyPart": "arms",
             "items": [
               {
-                "id": "seed011",
-                "exerciseId": "hCjGsRQ",
-                "sets": 2,
-                "reps": 45,
-                "restSec": 45,
-                "note": "Giữ 45 giây mỗi set"
+                "id": "i05",
+                "exerciseId": "Barbell_Curl",
+                "sets": 3,
+                "reps": 12,
+                "restSec": 60
+              },
+              {
+                "id": "i06",
+                "exerciseId": "Standing_Dumbbell_Triceps_Extension",
+                "sets": 3,
+                "reps": 12,
+                "restSec": 60
+              }
+            ]
+          },
+          {
+            "id": "b-tue-d",
+            "kind": "cooldown",
+            "items": [
+              {
+                "id": "i07",
+                "exerciseId": "Chest_And_Front_Of_Shoulder_Stretch",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 15,
+                "holdSec": 45
+              },
+              {
+                "id": "i08",
+                "exerciseId": "Behind_Head_Chest_Stretch",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 15,
+                "holdSec": 30
               }
             ]
           }
@@ -91,76 +96,83 @@
       },
       "wed": null,
       "thu": {
-        "name": "Lower emphasis",
+        "name": "Lưng & chân",
         "blocks": [
           {
-            "id": "seed018",
-            "bodyPart": "upper legs",
+            "id": "b-thu-w",
+            "kind": "warmup",
             "items": [
               {
-                "id": "seed013",
-                "exerciseId": "qXTaZnJ",
-                "sets": 3,
-                "reps": 10,
-                "restSec": 120,
-                "note": "Bài chính"
-              },
-              {
-                "id": "seed014",
-                "exerciseId": "wQ2c4XD",
-                "sets": 3,
-                "reps": 10,
-                "restSec": 120,
-                "note": "Lưng thẳng, cảm nhận đùi sau"
-              },
-              {
-                "id": "seed015",
-                "exerciseId": "my33uHU",
-                "sets": 2,
-                "reps": 12,
-                "restSec": 60
-              },
-              {
-                "id": "seed016",
-                "exerciseId": "17lJ1kr",
-                "sets": 2,
-                "reps": 12,
-                "restSec": 60
-              },
-              {
-                "id": "seed017",
-                "exerciseId": "Pjbc0Kt",
-                "sets": 2,
-                "reps": 12,
-                "restSec": 60,
-                "note": "Siết mông 1 giây ở đỉnh"
+                "id": "i09",
+                "exerciseId": "Rowing_Stationary",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 30,
+                "holdSec": 240
               }
             ]
           },
           {
-            "id": "seed020",
-            "bodyPart": "lower legs",
+            "id": "b-thu-b",
+            "kind": "main",
+            "bodyPart": "back",
             "items": [
               {
-                "id": "seed019",
-                "exerciseId": "ykUOVze",
+                "id": "i10",
+                "exerciseId": "Wide-Grip_Lat_Pulldown",
                 "sets": 3,
-                "reps": 15,
-                "restSec": 45
+                "reps": 12,
+                "restSec": 60
+              },
+              {
+                "id": "i11",
+                "exerciseId": "Seated_Cable_Rows",
+                "sets": 3,
+                "reps": 12,
+                "restSec": 60
               }
             ]
           },
           {
-            "id": "seed022",
-            "bodyPart": "waist",
+            "id": "b-thu-l",
+            "kind": "main",
+            "bodyPart": "legs",
             "items": [
               {
-                "id": "seed021",
-                "exerciseId": "iny3m5y",
-                "sets": 2,
-                "reps": 10,
-                "restSec": 45,
-                "note": "10 nhịp mỗi bên"
+                "id": "i12",
+                "exerciseId": "Barbell_Squat",
+                "sets": 4,
+                "reps": 8,
+                "restSec": 120
+              },
+              {
+                "id": "i13",
+                "exerciseId": "Leg_Press",
+                "sets": 3,
+                "reps": 12,
+                "restSec": 90
+              }
+            ]
+          },
+          {
+            "id": "b-thu-d",
+            "kind": "cooldown",
+            "items": [
+              {
+                "id": "i14",
+                "exerciseId": "Lying_Hamstring",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 15,
+                "holdSec": 45
+              },
+              {
+                "id": "i15",
+                "exerciseId": "Childs_Pose",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 15,
+                "holdSec": 60
               }
             ]
           }
@@ -168,91 +180,85 @@
       },
       "fri": null,
       "sat": {
-        "name": "Full body",
+        "name": "Vai & core",
         "blocks": [
           {
-            "id": "seed024",
-            "bodyPart": "chest",
+            "id": "b-sat-w",
+            "kind": "warmup",
             "items": [
               {
-                "id": "seed023",
-                "exerciseId": "3TZduzM",
-                "sets": 3,
-                "reps": 10,
-                "restSec": 90
+                "id": "i16",
+                "exerciseId": "Bicycling_Stationary",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 30,
+                "holdSec": 180
               }
             ]
           },
           {
-            "id": "seed026",
-            "bodyPart": "back",
-            "items": [
-              {
-                "id": "seed025",
-                "exerciseId": "LEprlgG",
-                "sets": 3,
-                "reps": 10,
-                "restSec": 90
-              }
-            ]
-          },
-          {
-            "id": "seed028",
-            "bodyPart": "upper legs",
-            "items": [
-              {
-                "id": "seed027",
-                "exerciseId": "qXTaZnJ",
-                "sets": 2,
-                "reps": 10,
-                "restSec": 120
-              }
-            ]
-          },
-          {
-            "id": "seed030",
+            "id": "b-sat-s",
+            "kind": "main",
             "bodyPart": "shoulders",
             "items": [
               {
-                "id": "seed029",
-                "exerciseId": "67n3r98",
-                "sets": 2,
-                "reps": 10,
-                "restSec": 75
-              }
-            ]
-          },
-          {
-            "id": "seed033",
-            "bodyPart": "upper arms",
-            "items": [
-              {
-                "id": "seed031",
-                "exerciseId": "G08RZcQ",
-                "sets": 2,
-                "reps": 12,
-                "restSec": 60
+                "id": "i17",
+                "exerciseId": "Standing_Military_Press",
+                "sets": 3,
+                "reps": 8,
+                "restSec": 90
               },
               {
-                "id": "seed032",
-                "exerciseId": "3ZflifB",
-                "sets": 2,
-                "reps": 12,
-                "restSec": 60
+                "id": "i18",
+                "exerciseId": "Side_Lateral_Raise",
+                "sets": 3,
+                "reps": 15,
+                "restSec": 45
               }
             ]
           },
           {
-            "id": "seed035",
-            "bodyPart": "waist",
+            "id": "b-sat-co",
+            "kind": "main",
+            "bodyPart": "core",
             "items": [
               {
-                "id": "seed034",
-                "exerciseId": "9pa4H5m",
-                "sets": 2,
-                "reps": 12,
+                "id": "i19",
+                "exerciseId": "Crunches",
+                "sets": 3,
+                "reps": 20,
+                "restSec": 45
+              },
+              {
+                "id": "i20",
+                "exerciseId": "Plank",
+                "sets": 3,
+                "reps": 1,
                 "restSec": 45,
-                "note": "12 nhịp mỗi bên"
+                "holdSec": 45,
+                "note": "Giữ thẳng lưng, siết mông"
+              }
+            ]
+          },
+          {
+            "id": "b-sat-d",
+            "kind": "cooldown",
+            "items": [
+              {
+                "id": "i21",
+                "exerciseId": "Chin_To_Chest_Stretch",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 15,
+                "holdSec": 30
+              },
+              {
+                "id": "i22",
+                "exerciseId": "Latissimus_Dorsi-SMR",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 15,
+                "holdSec": 45
               }
             ]
           }
@@ -264,206 +270,150 @@
   "logs": [
     {
       "id": "seedlog1",
-      "dateISO": "2026-09-18T12:00:00.000Z",
+      "dateISO": "2026-09-19T12:00:00.000Z",
       "dayKey": "sat",
-      "dayName": "Full body",
-      "startedAt": 1789732800000,
-      "finishedAt": 1789736280000,
+      "dayName": "Vai & core",
+      "startedAt": 1789819200000,
+      "finishedAt": 1789822680000,
       "entries": [
         {
-          "exerciseId": "3TZduzM",
+          "exerciseId": "Standing_Military_Press",
           "setsDone": 3,
           "repsDone": [
-            10,
-            10,
-            10
-          ]
+            8,
+            8,
+            8
+          ],
+          "weight": 35
         },
         {
-          "exerciseId": "LEprlgG",
+          "exerciseId": "Side_Lateral_Raise",
           "setsDone": 3,
           "repsDone": [
-            10,
-            10,
-            10
+            15,
+            15,
+            15
+          ],
+          "weight": 8
+        },
+        {
+          "exerciseId": "Crunches",
+          "setsDone": 3,
+          "repsDone": [
+            20,
+            20,
+            20
           ]
         },
         {
-          "exerciseId": "qXTaZnJ",
-          "setsDone": 2,
+          "exerciseId": "Plank",
+          "setsDone": 3,
           "repsDone": [
-            10,
-            10
-          ]
-        },
-        {
-          "exerciseId": "67n3r98",
-          "setsDone": 2,
-          "repsDone": [
-            10,
-            10
-          ]
-        },
-        {
-          "exerciseId": "G08RZcQ",
-          "setsDone": 2,
-          "repsDone": [
-            12,
-            12
-          ]
-        },
-        {
-          "exerciseId": "3ZflifB",
-          "setsDone": 2,
-          "repsDone": [
-            12,
-            12
-          ]
-        },
-        {
-          "exerciseId": "9pa4H5m",
-          "setsDone": 2,
-          "repsDone": [
-            12,
-            12
+            1,
+            1,
+            1
           ]
         }
       ]
     },
     {
       "id": "seedlog2",
-      "dateISO": "2026-09-16T12:00:00.000Z",
+      "dateISO": "2026-09-17T12:00:00.000Z",
       "dayKey": "thu",
-      "dayName": "Lower emphasis",
-      "startedAt": 1789560000000,
-      "finishedAt": 1789563720000,
+      "dayName": "Lưng & chân",
+      "startedAt": 1789646400000,
+      "finishedAt": 1789649880000,
       "entries": [
         {
-          "exerciseId": "qXTaZnJ",
+          "exerciseId": "Wide-Grip_Lat_Pulldown",
           "setsDone": 3,
           "repsDone": [
-            10,
-            10,
-            10
-          ]
+            12,
+            12,
+            12
+          ],
+          "weight": 45
         },
         {
-          "exerciseId": "wQ2c4XD",
+          "exerciseId": "Seated_Cable_Rows",
           "setsDone": 3,
           "repsDone": [
-            10,
-            10,
-            10
-          ]
-        },
-        {
-          "exerciseId": "my33uHU",
-          "setsDone": 2,
-          "repsDone": [
+            12,
             12,
             12
-          ]
+          ],
+          "weight": 45
         },
         {
-          "exerciseId": "17lJ1kr",
-          "setsDone": 2,
+          "exerciseId": "Barbell_Squat",
+          "setsDone": 4,
           "repsDone": [
-            12,
-            12
-          ]
+            8,
+            8,
+            8,
+            8
+          ],
+          "weight": 70
         },
         {
-          "exerciseId": "Pjbc0Kt",
-          "setsDone": 2,
-          "repsDone": [
-            12,
-            12
-          ]
-        },
-        {
-          "exerciseId": "ykUOVze",
+          "exerciseId": "Leg_Press",
           "setsDone": 3,
           "repsDone": [
-            15,
-            15,
-            15
-          ]
-        },
-        {
-          "exerciseId": "iny3m5y",
-          "setsDone": 2,
-          "repsDone": [
-            10,
-            10
-          ]
+            12,
+            12,
+            12
+          ],
+          "weight": 120
         }
       ]
     },
     {
       "id": "seedlog3",
-      "dateISO": "2026-09-14T12:00:00.000Z",
+      "dateISO": "2026-09-15T12:00:00.000Z",
       "dayKey": "tue",
-      "dayName": "Upper emphasis",
-      "startedAt": 1789387200000,
-      "finishedAt": 1789390500000,
+      "dayName": "Ngực & tay",
+      "startedAt": 1789473600000,
+      "finishedAt": 1789477080000,
       "entries": [
         {
-          "exerciseId": "EIeI8Vf",
+          "exerciseId": "Barbell_Bench_Press_-_Medium_Grip",
           "setsDone": 3,
           "repsDone": [
             10,
             10,
             10
-          ]
+          ],
+          "weight": 50
         },
         {
-          "exerciseId": "LEprlgG",
+          "exerciseId": "Incline_Dumbbell_Press",
           "setsDone": 3,
           "repsDone": [
-            10,
-            10,
-            10
-          ]
-        },
-        {
-          "exerciseId": "fUBheHs",
-          "setsDone": 2,
-          "repsDone": [
+            12,
             12,
             12
-          ]
+          ],
+          "weight": 18
         },
         {
-          "exerciseId": "dRTfGZT",
-          "setsDone": 2,
-          "repsDone": [
-            14,
-            14
-          ]
-        },
-        {
-          "exerciseId": "G08RZcQ",
-          "setsDone": 2,
+          "exerciseId": "Barbell_Curl",
+          "setsDone": 3,
           "repsDone": [
             12,
-            12
-          ]
-        },
-        {
-          "exerciseId": "3ZflifB",
-          "setsDone": 2,
-          "repsDone": [
             12,
             12
-          ]
+          ],
+          "weight": 25
         },
         {
-          "exerciseId": "hCjGsRQ",
-          "setsDone": 2,
+          "exerciseId": "Standing_Dumbbell_Triceps_Extension",
+          "setsDone": 3,
           "repsDone": [
-            45,
-            45
-          ]
+            12,
+            12,
+            12
+          ],
+          "weight": 12
         }
       ]
     }

@@ -24,8 +24,8 @@ export function PrefetchMedia({ urls }: { urls: string[] }) {
         {running
           ? `Đang tải ${progress.done}/${progress.total}…`
           : finished
-            ? `Đã tải ${progress.total} GIF`
-            : "Tải trước GIF"}
+            ? `Đã tải ${progress.total} ảnh`
+            : "Tải trước ảnh"}
       </span>
     </Button>
   );

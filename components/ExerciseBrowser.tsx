@@ -2,30 +2,33 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ExerciseGif } from "@/components/ExerciseGif";
+import { ExerciseImage } from "@/components/ExerciseImage";
 import { Chip, Label } from "@/components/ui/Chip";
 import { search } from "@/lib/exercises";
-import { bodyPartLabel, equipmentLabel } from "@/lib/labels";
+import { bodyPartLabel, equipmentLabel, levelLabel } from "@/lib/labels";
 import { useCatalog } from "@/lib/useCatalog";
-import type { Exercise } from "@/lib/types";
+import { LEVELS, type Exercise, type ExerciseKind, type Level } from "@/lib/types";
 import { Icon } from "@/components/ui/Icon";
 
 type Props = {
   /** Locks the list to one body part (the block being edited). */
   bodyPart?: string;
+  /** Bỏ trống = bài chính. Khối khởi động/giãn cơ khoá danh sách vào loại của nó. */
+  exerciseKind?: ExerciseKind;
   selected?: Set<string>;
   onToggle?: (exercise: Exercise) => void;
 };
 
-export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
+export function ExerciseBrowser({ bodyPart, exerciseKind, selected, onToggle }: Props) {
   const { catalog, error, loading } = useCatalog();
   const [q, setQ] = useState("");
   const [bodyParts, setBodyParts] = useState<string[]>(bodyPart ? [bodyPart] : []);
   const [equipments, setEquipments] = useState<string[]>([]);
+  const [levels, setLevels] = useState<Level[]>([]);
 
   const results = useMemo(
-    () => (catalog ? search(catalog, { q, bodyParts, equipments }) : []),
-    [catalog, q, bodyParts, equipments],
+    () => (catalog ? search(catalog, { q, bodyParts, equipments, levels, kind: exerciseKind }) : []),
+    [catalog, q, bodyParts, equipments, levels, exerciseKind],
   );
 
   const heading =
@@ -51,7 +54,7 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
         </div>
       </div>
 
-      {bodyPart ? null : (
+      {bodyPart || exerciseKind ? null : (
         <FilterRow
           title="Nhóm cơ chính"
           count={`${catalog?.taxonomy.bodyParts.length ?? 0} nhóm`}
@@ -67,6 +70,13 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
         selected={equipments}
         onChange={setEquipments}
         label={equipmentLabel}
+      />
+      <FilterRow
+        title="Cấp độ"
+        options={LEVELS}
+        selected={levels}
+        onChange={setLevels}
+        label={levelLabel}
       />
 
       <div className="flex items-center gap-2 px-4 pb-2 pt-6">
@@ -90,7 +100,7 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
           const body = (
             <>
               <span className="size-20 shrink-0 overflow-hidden rounded-card">
-                <ExerciseGif src={ex.gifUrl} alt={ex.nameVi} size={160} />
+                <ExerciseImage srcs={ex.imageUrls} alt={ex.nameVi} size={160} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-xs text-tertiary">
@@ -98,8 +108,9 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
                 </span>
                 <span className="mt-0.5 block truncate font-serif text-base font-semibold">{ex.nameVi}</span>
                 <span className="ex-name block truncate text-sm text-muted">{ex.name}</span>
-                <span className="mt-0.5 block truncate text-xs text-muted">
-                  Nhóm cơ: {ex.bodyParts.map(bodyPartLabel).join(", ")}
+                <span className="mt-0.5 flex items-center gap-1.5 truncate text-xs text-muted">
+                  <Chip tone={ex.level === 1 ? "accent" : undefined}>{levelLabel(ex.level)}</Chip>
+                  {ex.bodyParts.map(bodyPartLabel).join(", ")}
                 </span>
               </span>
               {onToggle ? (
@@ -140,7 +151,7 @@ export function ExerciseBrowser({ bodyPart, selected, onToggle }: Props) {
   );
 }
 
-function FilterRow({
+function FilterRow<T extends string | number>({
   title,
   count,
   options,
@@ -150,10 +161,10 @@ function FilterRow({
 }: {
   title: string;
   count?: string;
-  options: string[];
-  selected: string[];
-  onChange: (next: string[]) => void;
-  label: (v: string) => string;
+  options: readonly T[];
+  selected: T[];
+  onChange: (next: T[]) => void;
+  label: (v: T) => string;
 }) {
   const chip = (on: boolean) =>
     `flex min-h-10 shrink-0 items-center gap-1 rounded-full px-4 text-sm ${

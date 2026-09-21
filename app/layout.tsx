@@ -9,7 +9,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   title: "Lịch tập",
-  description: "Lịch tập gym lặp theo tuần, có GIF hướng dẫn và chế độ tập theo set.",
+  description: "Lịch tập gym lặp theo tuần, có ảnh hướng dẫn và chế độ tập theo set.",
   appleWebApp: { capable: true, statusBarStyle: "default", title: "Lịch tập" },
 };
 

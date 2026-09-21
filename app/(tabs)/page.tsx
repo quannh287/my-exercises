@@ -52,7 +52,7 @@ export default function SchedulePage() {
               dayKey={key}
               day={schedule.days[key]}
               names={exerciseNames(schedule.days[key], catalog?.byId)}
-              gifUrls={exerciseGifs(schedule.days[key], catalog?.byId)}
+              imageUrls={exerciseImages(schedule.days[key], catalog?.byId)}
             />
           ) : (
             <DayCard key={key} dayKey={key} day={schedule.days[key]} done={week.doneDays.has(key)} />
@@ -81,11 +81,15 @@ export default function SchedulePage() {
   );
 }
 
-const exerciseNames = (day: Day | null, byId?: Map<string, { nameVi: string }>) =>
-  day ? flatItems(day).map((i) => byId?.get(i.exerciseId)?.nameVi ?? i.exerciseId) : [];
+/** Chỉ bài chính — thẻ hôm nay đang giới thiệu "bài tập chính", không phải khởi động với giãn cơ. */
+const mainItems = (day: Day | null) => (day ? day.blocks.filter((b) => b.kind === "main").flatMap((b) => b.items) : []);
 
-const exerciseGifs = (day: Day | null, byId?: Map<string, { gifUrl: string }>) =>
-  day ? flatItems(day).flatMap((i) => byId?.get(i.exerciseId)?.gifUrl ?? []) : [];
+const exerciseNames = (day: Day | null, byId?: Map<string, { nameVi: string }>) =>
+  mainItems(day).map((i) => byId?.get(i.exerciseId)?.nameVi ?? i.exerciseId);
+
+// Tải trước ảnh của cả buổi, kể cả khởi động/giãn cơ — offline là phải xem được hết.
+const exerciseImages = (day: Day | null, byId?: Map<string, { imageUrls: string[] }>) =>
+  day ? flatItems(day).flatMap((i) => byId?.get(i.exerciseId)?.imageUrls ?? []) : [];
 
 function DayBadge({ dayKey, active }: { dayKey: WeekDay; active?: boolean }) {
   return (
@@ -134,12 +138,12 @@ function TodayCard({
   dayKey,
   day,
   names,
-  gifUrls,
+  imageUrls,
 }: {
   dayKey: WeekDay;
   day: Day | null;
   names: string[];
-  gifUrls: string[];
+  imageUrls: string[];
 }) {
   if (!day) {
     return (
@@ -203,11 +207,11 @@ function TodayCard({
         </div>
       ) : null}
 
-      {gifUrls.length ? <div className="mx-4 mt-3"><PrefetchMedia urls={gifUrls} /></div> : null}
+      {imageUrls.length ? <div className="mx-4 mt-3"><PrefetchMedia urls={imageUrls} /></div> : null}
 
       <div className="mt-3 flex items-center justify-between px-4 pb-4">
         <span className="truncate text-sm text-muted">
-          {day.blocks.map((b) => bodyPartLabel(b.bodyPart)).join(" · ") || "Chưa có nhóm cơ"}
+          {day.blocks.flatMap((b) => (b.bodyPart ? bodyPartLabel(b.bodyPart) : [])).join(" · ") || "Chưa có nhóm cơ"}
         </span>
         <Link href={`/schedule/${dayKey}`} className="shrink-0 text-sm font-semibold text-accent">
           Xem chi tiết <Icon name="chevronRight" className="inline size-3.5 align-[-1px]" strokeWidth={2.4} />
