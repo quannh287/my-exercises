@@ -1,5 +1,5 @@
 // Cache-first for the two things that make the app work offline: the bundled catalog and the GIFs already seen.
-const CACHE = "workout-v3";
+const CACHE = "workout-v4";
 const CACHE_FIRST = (url) =>
   url.pathname.startsWith("/data/") ||
   url.pathname.startsWith("/_next/static/") ||
@@ -31,7 +31,10 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       Promise.race([
         fetch(request).then((res) => {
-          if (storable(res)) caches.open(CACHE).then((c) => c.put(request, res.clone()));
+          if (storable(res)) {
+            const copy = res.clone(); // clone now: caches.open() resolves after the page has started reading the body
+            caches.open(CACHE).then((c) => c.put(request, copy));
+          }
           return res;
         }),
         timeout,
@@ -47,7 +50,10 @@ self.addEventListener("fetch", (event) => {
       (hit) =>
         hit ??
         fetch(request).then((res) => {
-          if (storable(res)) caches.open(CACHE).then((c) => c.put(request, res.clone()));
+          if (storable(res)) {
+            const copy = res.clone(); // clone now: caches.open() resolves after the page has started reading the body
+            caches.open(CACHE).then((c) => c.put(request, copy));
+          }
           return res;
         }),
     ),
