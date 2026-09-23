@@ -12,8 +12,9 @@ import { equipmentLabel, muscleLabel } from "@/lib/labels";
 import { setStore, uid, useStore } from "@/lib/store";
 import { lastWeight, logVolume, volumeDelta } from "@/lib/stats";
 import { useCatalog, useDetails } from "@/lib/useCatalog";
+import { useToday } from "@/lib/useToday";
 import { completeSet as advance, setItemWeight, startProgress, type Progress } from "@/lib/workout";
-import { DAY_LABEL, flatItems, type Log, type LogEntry, type WeekDay } from "@/lib/types";
+import { DAY_LABEL, WEEK_DAYS, flatItems, type Log, type LogEntry, type WeekDay } from "@/lib/types";
 import { Icon } from "@/components/ui/Icon";
 
 export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
@@ -21,6 +22,7 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
   const store = useStore();
   const day = store.schedule.days[dayKey];
   const { catalog } = useCatalog();
+  const today = useToday();
 
   const items = useMemo(() => (day ? flatItems(day) : []), [day]);
   const [startedAt] = useState(() => Date.now());
@@ -72,6 +74,19 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
       <Centered>
         <p className="text-muted">Buổi này chưa có bài nào.</p>
         <Button onClick={() => router.replace(`/schedule/${dayKey}`)}>Thiết lập buổi tập</Button>
+      </Centered>
+    );
+  }
+
+  // today === null lúc mới hydrate trên client — chờ tín hiệu thật thay vì chặn nhầm.
+  // Ngày đã qua trong tuần vẫn cho tập bù, chỉ chặn ngày chưa tới.
+  if (today !== null && WEEK_DAYS.indexOf(dayKey) > WEEK_DAYS.indexOf(today)) {
+    return (
+      <Centered>
+        <p className="text-muted">
+          {DAY_LABEL[dayKey]} chưa tới — hôm nay mới là {DAY_LABEL[today].toLowerCase()}.
+        </p>
+        <Button onClick={() => router.replace("/")}>Về lịch tập</Button>
       </Centered>
     );
   }
