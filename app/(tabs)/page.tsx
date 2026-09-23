@@ -55,7 +55,14 @@ export default function SchedulePage() {
               imageUrls={exerciseImages(schedule.days[key], catalog?.byId)}
             />
           ) : (
-            <DayCard key={key} dayKey={key} day={schedule.days[key]} done={week.doneDays.has(key)} />
+            <DayCard
+              key={key}
+              dayKey={key}
+              day={schedule.days[key]}
+              done={week.doneDays.has(key)}
+              // Ngày đã qua trong tuần mà chưa tập thì cho tập bù ngay từ đây.
+              isPast={today !== null && WEEK_DAYS.indexOf(key) < WEEK_DAYS.indexOf(today)}
+            />
           ),
         )}
       </div>
@@ -106,11 +113,22 @@ function DayBadge({ dayKey, active }: { dayKey: WeekDay; active?: boolean }) {
   );
 }
 
-function DayCard({ dayKey, day, done }: { dayKey: WeekDay; day: Day | null; done: boolean }) {
+function DayCard({
+  dayKey,
+  day,
+  done,
+  isPast,
+}: {
+  dayKey: WeekDay;
+  day: Day | null;
+  done: boolean;
+  isPast: boolean;
+}) {
   const n = countItems(day);
+  const catchUp = isPast && day && n > 0 && !done;
   return (
     <Link
-      href={`/schedule/${dayKey}`}
+      href={catchUp ? `/workout/${dayKey}` : `/schedule/${dayKey}`}
       className="flex items-center gap-4 rounded-card bg-surface px-4 py-3.5 shadow-soft active:bg-accent-soft/40"
     >
       <DayBadge dayKey={dayKey} />
@@ -127,6 +145,11 @@ function DayCard({ dayKey, day, done }: { dayKey: WeekDay; day: Day | null; done
         </Chip>
       ) : !day ? (
         <Chip tone="amber">Nghỉ</Chip>
+      ) : catchUp ? (
+        <Chip tone="accent">
+          <Icon name="play" className="size-3.5" strokeWidth={2.4} />
+          Tập bù
+        </Chip>
       ) : (
         <Icon name="chevronRight" className="size-4 text-muted" strokeWidth={2} />
       )}
