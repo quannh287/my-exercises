@@ -126,18 +126,18 @@ function DayCard({
 }) {
   const n = countItems(day);
   const catchUp = isPast && day && n > 0 && !done;
+  // Thẻ luôn mở trang chi tiết để xem lại bài tập; tập bù là nút riêng, không nuốt mất lối xem.
   return (
-    <Link
-      href={catchUp ? `/workout/${dayKey}` : `/schedule/${dayKey}`}
-      className="flex items-center gap-4 rounded-card bg-surface px-4 py-3.5 shadow-soft active:bg-accent-soft/40"
-    >
-      <DayBadge dayKey={dayKey} />
-      <span className="min-w-0 flex-1">
-        <span className="block truncate font-serif text-base font-semibold">{day ? day.name : "Ngày nghỉ"}</span>
-        <span className="block truncate text-sm text-muted">
-          {day ? `${n} bài tập · Dự kiến ${estimateMinutes(day)} phút` : "Phục hồi cơ bắp & nạp năng lượng"}
+    <div className="flex items-center gap-3 rounded-card bg-surface px-4 py-3.5 shadow-soft">
+      <Link href={`/schedule/${dayKey}`} className="flex min-w-0 flex-1 items-center gap-4 active:opacity-70">
+        <DayBadge dayKey={dayKey} />
+        <span className="min-w-0 flex-1">
+          <span className="block truncate font-serif text-base font-semibold">{day ? day.name : "Ngày nghỉ"}</span>
+          <span className="block truncate text-sm text-muted">
+            {day ? `${n} bài tập · Dự kiến ${estimateMinutes(day)} phút` : "Phục hồi cơ bắp & nạp năng lượng"}
+          </span>
         </span>
-      </span>
+      </Link>
       {done ? (
         <Chip tone="accent">
           <Icon name="check" className="size-3.5" strokeWidth={2.4} />
@@ -146,14 +146,16 @@ function DayCard({
       ) : !day ? (
         <Chip tone="amber">Nghỉ</Chip>
       ) : catchUp ? (
-        <Chip tone="accent">
-          <Icon name="play" className="size-3.5" strokeWidth={2.4} />
-          Tập bù
-        </Chip>
+        <Link href={`/workout/${dayKey}`} className="shrink-0 active:opacity-70">
+          <Chip tone="accent">
+            <Icon name="play" className="size-3.5" strokeWidth={2.4} />
+            Tập bù
+          </Chip>
+        </Link>
       ) : (
         <Icon name="chevronRight" className="size-4 text-muted" strokeWidth={2} />
       )}
-    </Link>
+    </div>
   );
 }
 

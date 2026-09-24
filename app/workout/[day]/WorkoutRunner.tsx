@@ -8,13 +8,13 @@ import { ExerciseImage } from "@/components/ExerciseImage";
 import { RestTimer } from "@/components/RestTimer";
 import { Sheet } from "@/components/ui/Sheet";
 import { Stepper } from "@/components/ui/Stepper";
-import { equipmentLabel, muscleLabel } from "@/lib/labels";
+import { blockKindLabel, bodyPartLabel, equipmentLabel, muscleLabel } from "@/lib/labels";
 import { setStore, uid, useStore } from "@/lib/store";
 import { lastWeight, logVolume, volumeDelta } from "@/lib/stats";
 import { useCatalog, useDetails } from "@/lib/useCatalog";
 import { useToday } from "@/lib/useToday";
 import { completeSet as advance, setItemWeight, startProgress, type Progress } from "@/lib/workout";
-import { DAY_LABEL, WEEK_DAYS, flatItems, type Log, type LogEntry, type WeekDay } from "@/lib/types";
+import { DAY_LABEL, WEEK_DAYS, flatItems, type Block, type Log, type LogEntry, type WeekDay } from "@/lib/types";
 import { Icon } from "@/components/ui/Icon";
 
 export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
@@ -31,6 +31,9 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
   // Một slot đồng hồ dùng cho cả hai việc: nghỉ giữa set, và giữ tư thế của bài giãn cơ.
   const [timer, setTimer] = useState<{ until: number; total: number; mode: "rest" | "hold" } | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
+  const [pickOpen, setPickOpen] = useState(false);
+  // Nhảy bài tự do nên index không còn suy ra được bài nào đã xong — giữ danh sách id riêng.
+  const [doneIds, setDoneIds] = useState<ReadonlySet<string>>(() => new Set());
 
   const { index, setsDone } = progress;
   const item = items[index];
@@ -60,8 +63,15 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
     const { next, rest: restSec, finished: done } = advance(items, progress);
     setProgress(next);
     setTimer(null);
+    if (next.entries.length > progress.entries.length) setDoneIds((s) => new Set(s).add(item.id));
     if (done) saveLog(next.entries);
     else if (restSec > 0) setTimer({ until: Date.now() + restSec * 1000, total: restSec, mode: "rest" });
+  };
+
+  const jumpTo = (i: number) => {
+    setProgress((p) => ({ ...p, index: i, setsDone: 0 }));
+    setTimer(null);
+    setPickOpen(false);
   };
 
   // `holdSec` chỉ được gán cho bài khởi động/giãn cơ lúc chọn bài, nên nó là tín hiệu đủ để đổi UI.
@@ -150,9 +160,14 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
           <h1 className="truncate font-serif text-lg font-bold">
             {DAY_LABEL[dayKey]}: {day.name}
           </h1>
-          <span className="shrink-0 font-mono text-sm text-muted tabular-nums">
-            Bài {index + 1}/{items.length} · {pct}%
-          </span>
+          <button
+            type="button"
+            onClick={() => setPickOpen(true)}
+            className="flex shrink-0 items-center gap-1 font-mono text-sm text-accent tabular-nums"
+          >
+            Bài {index + 1}/{items.length}
+            <Icon name="chevronRight" className="size-3.5" strokeWidth={2.4} />
+          </button>
         </div>
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line/50">
           <div className="h-full rounded-full bg-accent transition-[width] duration-300" style={{ width: `${pct}%` }} />
@@ -316,6 +331,58 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
         </div>
       )}
 
+      <Sheet open={pickOpen} onClose={() => setPickOpen(false)} title="Chọn bài tập">
+        <div className="space-y-4">
+          {groupsWithIndex(day.blocks).map((block) => (
+            <div key={block.id}>
+              <Label>
+                {blockKindLabel(block.kind)}
+                {block.bodyPart ? ` · ${bodyPartLabel(block.bodyPart)}` : ""}
+              </Label>
+              <ul className="mt-2 space-y-2">
+                {block.rows.map(({ item: it, idx }) => (
+                  <li key={it.id}>
+                    <button
+                      type="button"
+                      onClick={() => jumpTo(idx)}
+                      className={`flex w-full items-center gap-3 rounded-card px-3 py-3 text-left ${
+                        idx === index ? "bg-accent text-white" : "bg-bg"
+                      }`}
+                    >
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate font-semibold">
+                          {catalog?.byId.get(it.exerciseId)?.nameVi ?? it.exerciseId}
+                        </span>
+                        <span className={`block text-sm ${idx === index ? "text-white/80" : "text-muted"}`}>
+                          {it.sets} hiệp · {it.holdSec ? `giữ ${it.holdSec}s` : `${it.reps} lần`}
+                        </span>
+                      </span>
+                      {doneIds.has(it.id) ? (
+                        <Icon name="check" className="size-4 shrink-0" strokeWidth={2.4} />
+                      ) : idx === index ? (
+                        <span className="shrink-0 text-sm font-semibold">Đang tập</span>
+                      ) : (
+                        <Icon name="play" className="size-4 shrink-0 text-muted" strokeWidth={2.2} />
+                      )}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <Button
+            variant="secondary"
+            disabled={!progress.entries.length}
+            onClick={() => {
+              setPickOpen(false);
+              saveLog(progress.entries);
+            }}
+          >
+            Kết thúc buổi, lưu {progress.entries.length} bài đã xong
+          </Button>
+        </div>
+      </Sheet>
+
       <Sheet open={guideOpen} onClose={() => setGuideOpen(false)} title={exercise?.nameVi ?? "Hướng dẫn"}>
         <ol className="list-inside list-decimal space-y-2 text-base leading-relaxed">
           {(details?.instructionsVi ?? []).map((step, i) => (
@@ -325,6 +392,12 @@ export function WorkoutRunner({ dayKey }: { dayKey: WeekDay }) {
       </Sheet>
     </main>
   );
+}
+
+/** Gắn lại vị trí phẳng của từng item để chọn bài mà vẫn thấy nó thuộc khối nào. */
+function groupsWithIndex(blocks: Block[]) {
+  let idx = -1;
+  return blocks.map((b) => ({ ...b, rows: b.items.map((item) => ({ item, idx: ++idx })) }));
 }
 
 function Centered({ children }: { children: React.ReactNode }) {
