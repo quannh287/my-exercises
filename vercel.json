@@ -1,0 +1,4 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "if [ \"$VERCEL_ENV\" != production ] || git log -1 --pretty=%B | grep -qiE 'release-please|: release'; then exit 1; fi; exit 0"
+}
