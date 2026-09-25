@@ -140,6 +140,17 @@ export async function enableSync(code = crypto.randomUUID()) {
   await syncNow();
 }
 
+/** Mã nằm sau `#` nên không bao giờ tới server hay log truy cập. */
+export const shareLink = (code: string) => `${location.origin}/me#sync=${code}`;
+
+/** Mã trong link vừa mở (quét QR bằng camera), rồi xoá khỏi thanh địa chỉ để không lưu vào lịch sử. */
+export function takeLinkCode(): string | null {
+  const code = new URLSearchParams(location.hash.slice(1)).get("sync");
+  if (code === null) return null;
+  history.replaceState(null, "", location.pathname + location.search);
+  return code;
+}
+
 export async function disableSync() {
   await saveCode(null);
   set({ code: null, status: "off", error: undefined });

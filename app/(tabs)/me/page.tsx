@@ -1,13 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { renderSVG } from "uqr";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Chip";
 import { clearStore, exportJson, importJson, useStore } from "@/lib/store";
 import { historyStats } from "@/lib/stats";
 import { countItems, WEEK_DAYS } from "@/lib/types";
 import { Icon } from "@/components/ui/Icon";
-import { disableSync, enableSync, syncNow, useSync } from "@/lib/sync";
+import { disableSync, enableSync, shareLink, syncNow, takeLinkCode, useSync } from "@/lib/sync";
 
 export default function MePage() {
   const store = useStore();
@@ -170,6 +171,10 @@ function SyncSection() {
   const [input, setInput] = useState("");
   const [message, setMessage] = useState<string | null>(null);
 
+  const [showQr, setShowQr] = useState(false);
+  const link = sync.code ? shareLink(sync.code) : null;
+  const qr = useMemo(() => (link ? renderSVG(link, { border: 2 }) : ""), [link]);
+
   const run = async (fn: () => Promise<void>, done?: string) => {
     setMessage(null);
     try {
@@ -178,6 +183,26 @@ function SyncSection() {
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Không đồng bộ được");
     }
+  };
+
+  useEffect(() => {
+    const code = takeLinkCode(); // đọc một lần: link đã bị xoá khỏi URL nên StrictMode chạy lại cũng không hỏi hai lần
+    if (code && confirm("Nối máy này với dữ liệu đồng bộ từ link? Dữ liệu hai bên sẽ được gộp lại."))
+      enableSync(code).then(
+        () => setMessage("Đã nối với máy khác."),
+        (err: Error) => setMessage(err.message),
+      );
+  }, []);
+
+  const shareCode = async () => {
+    if (!link) return;
+    try {
+      if (navigator.share) return await navigator.share({ title: "Đồng bộ lịch tập", url: link });
+    } catch (err) {
+      if ((err as Error).name === "AbortError") return;
+    }
+    await navigator.clipboard.writeText(link);
+    setMessage("Đã chép link.");
   };
 
   return (
@@ -194,6 +219,21 @@ function SyncSection() {
             <Label>Mã đồng bộ — nhập mã này ở máy khác, và cất ở nơi an toàn</Label>
             <p className="mt-1.5 break-all font-mono text-sm select-all">{sync.code}</p>
           </div>
+          {showQr ? (
+            <div className="space-y-2 rounded-card bg-white p-3">
+              <div className="mx-auto max-w-56 [&>svg]:h-auto [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: qr }} />
+              <p className="text-center text-xs text-neutral-600">Quét bằng camera của máy kia để nối dữ liệu</p>
+            </div>
+          ) : null}
+          <Button variant="secondary" onClick={() => setShowQr((v) => !v)}>
+            {showQr ? "Ẩn mã QR" : "Hiện mã QR"}
+          </Button>
+          <Button variant="secondary" onClick={() => void run(shareCode)}>
+            <span className="flex items-center justify-center gap-2">
+              <Icon name="share" className="size-5" />
+              Chia sẻ link đồng bộ
+            </span>
+          </Button>
           <Button
             variant="secondary"
             onClick={() => void run(() => navigator.clipboard.writeText(sync.code!), "Đã chép mã.")}
