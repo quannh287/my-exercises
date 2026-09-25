@@ -12,6 +12,7 @@
     "data:fetch": "node scripts/fetch-exercises.mjs",
     "data:split": "node scripts/split-translations.mjs",
     "data:vi": "node scripts/build-translations.mjs",
+    "icons": "sh scripts/build-icons.sh",
     "test": "node --test --experimental-strip-types lib/*.test.mjs"
   },
   "dependencies": {
