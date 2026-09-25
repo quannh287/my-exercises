@@ -89,7 +89,14 @@ export type Log = {
   entries: LogEntry[];
 };
 
-export type Store = { schedule: Schedule; logs: Log[] };
+export type Store = {
+  schedule: Schedule;
+  logs: Log[];
+  /** Mốc lần xoá/nhập file gần nhất — khi đồng bộ, bên có epoch mới hơn thay thế hẳn bên kia. */
+  epoch: number;
+  /** Mốc lịch tập được sửa lần cuối, để chọn bản lịch mới hơn khi gộp hai máy. */
+  scheduleAt: number;
+};
 
 export const todayKey = (d = new Date()): WeekDay => WEEK_DAYS[(d.getDay() + 6) % 7];
 
@@ -208,5 +215,7 @@ export function validateStore(input: unknown): Store {
       ) as Schedule["days"],
     },
     logs: (root.logs === undefined ? [] : arr(root.logs, "logs")).map((l, i) => readLog(l, `logs[${i}]`)),
+    epoch: root.epoch === undefined ? 0 : num(root.epoch, "epoch", 0),
+    scheduleAt: root.scheduleAt === undefined ? 0 : num(root.scheduleAt, "scheduleAt", 0),
   };
 }

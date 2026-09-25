@@ -7,6 +7,7 @@ import { clearStore, exportJson, importJson, useStore } from "@/lib/store";
 import { historyStats } from "@/lib/stats";
 import { countItems, WEEK_DAYS } from "@/lib/types";
 import { Icon } from "@/components/ui/Icon";
+import { disableSync, enableSync, syncNow, useSync } from "@/lib/sync";
 
 export default function MePage() {
   const store = useStore();
@@ -65,6 +66,8 @@ export default function MePage() {
         <Stat value={`${stats.streakWeeks}`} label="Tuần liên tục" />
       </section>
 
+      <SyncSection />
+
       <section className="mt-4 rounded-card bg-surface p-5 shadow-soft">
         <div className="flex items-center gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-muted">
@@ -109,7 +112,7 @@ export default function MePage() {
           <Button
             variant="danger"
             onClick={() => {
-              if (confirm("Xoá toàn bộ lịch và lịch sử? Không khôi phục được nếu chưa xuất file.")) {
+              if (confirm("Xoá toàn bộ lịch và lịch sử, kể cả trên các máy đang đồng bộ? Không khôi phục được nếu chưa xuất file.")) {
                 clearStore();
                 setMessage("Đã xoá dữ liệu.");
               }
@@ -153,5 +156,90 @@ function Stat({ value, label }: { value: number | string; label: string }) {
       <span className="block font-serif text-2xl font-bold text-accent tabular-nums">{value}</span>
       <span className="mt-0.5 block text-xs text-muted">{label}</span>
     </span>
+  );
+}
+
+const STATUS: Record<string, string> = {
+  syncing: "Đang đồng bộ…",
+  ok: "Đã đồng bộ",
+  error: "Lỗi đồng bộ",
+};
+
+function SyncSection() {
+  const sync = useSync();
+  const [input, setInput] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+
+  const run = async (fn: () => Promise<void>, done?: string) => {
+    setMessage(null);
+    try {
+      await fn();
+      if (done) setMessage(done);
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Không đồng bộ được");
+    }
+  };
+
+  return (
+    <section className="mt-4 rounded-card bg-surface p-5 shadow-soft">
+      <h2 className="font-serif text-lg font-bold">Đồng bộ giữa các máy</h2>
+      {sync.code ? (
+        <div className="mt-3 space-y-3">
+          <p className="text-sm text-muted">
+            {STATUS[sync.status]}
+            {sync.status === "ok" && sync.at ? ` lúc ${new Date(sync.at).toLocaleTimeString("vi-VN")}` : ""}
+            {sync.error ? ` — ${sync.error}` : ""}
+          </p>
+          <div className="rounded-card bg-bg p-3">
+            <Label>Mã đồng bộ — nhập mã này ở máy khác, và cất ở nơi an toàn</Label>
+            <p className="mt-1.5 break-all font-mono text-sm select-all">{sync.code}</p>
+          </div>
+          <Button
+            variant="secondary"
+            onClick={() => void run(() => navigator.clipboard.writeText(sync.code!), "Đã chép mã.")}
+          >
+            <span className="flex items-center justify-center gap-2">
+              <Icon name="copy" className="size-5" />
+              Chép mã
+            </span>
+          </Button>
+          <Button variant="secondary" disabled={sync.status === "syncing"} onClick={() => void run(syncNow)}>
+            Đồng bộ ngay
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              if (confirm("Tắt đồng bộ trên máy này? Dữ liệu trên máy và trên cloud vẫn giữ nguyên."))
+                void run(disableSync);
+            }}
+          >
+            Tắt đồng bộ trên máy này
+          </Button>
+        </div>
+      ) : (
+        <div className="mt-3 space-y-3">
+          <p className="text-sm text-muted">
+            Lưu một bản trên cloud để không mất dữ liệu khi xoá trình duyệt hay đổi máy. Không cần tài khoản — ai có
+            mã là xem và sửa được, nên đừng chia sẻ mã.
+          </p>
+          <Button onClick={() => void run(() => enableSync(), "Đã bật đồng bộ.")}>Bật đồng bộ</Button>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Hoặc dán mã từ máy khác"
+            aria-label="Mã đồng bộ"
+            className="w-full rounded-card bg-bg px-4 py-3 font-mono text-sm outline-none focus:ring-2 focus:ring-accent/40"
+          />
+          <Button
+            variant="secondary"
+            disabled={!input.trim()}
+            onClick={() => void run(() => enableSync(input), "Đã nối với máy khác.")}
+          >
+            Nối bằng mã
+          </Button>
+        </div>
+      )}
+      {message ? <p className="mt-3 text-center text-sm text-muted">{message}</p> : null}
+    </section>
   );
 }

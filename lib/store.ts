@@ -10,7 +10,7 @@ const emptySchedule = (): Schedule => ({
   days: Object.fromEntries(WEEK_DAYS.map((d) => [d, null])) as Schedule["days"],
 });
 
-export const emptyStore = (): Store => ({ schedule: emptySchedule(), logs: [] });
+export const emptyStore = (): Store => ({ schedule: emptySchedule(), logs: [], epoch: 0, scheduleAt: 0 });
 
 function parse(raw: string | null): Store {
   if (!raw) return emptyStore();
@@ -44,8 +44,19 @@ export function getStore(): Store {
   return cache;
 }
 
+/** Người dùng sửa dữ liệu: đánh dấu mốc sửa lịch rồi báo cho đồng bộ. */
 export function setStore(next: Store | ((prev: Store) => Store)) {
-  const value = typeof next === "function" ? next(getStore()) : next;
+  const prev = getStore();
+  let value = typeof next === "function" ? next(prev) : next;
+  if (value.schedule !== prev.schedule) value = { ...value, scheduleAt: Date.now() };
+  commit(value);
+  for (const l of writeListeners) l();
+}
+
+export const writeListeners = new Set<() => void>();
+
+/** Ghi xuống máy mà không coi là sửa của người dùng — dùng khi nhận bản gộp từ cloud. */
+export function commit(value: Store) {
   cache = value;
   written = true;
   const raw = JSON.stringify(value);
@@ -61,7 +72,7 @@ export function setStore(next: Store | ((prev: Store) => Store)) {
 }
 
 // Safari xoá localStorage sau 7 ngày không mở app, nên IndexedDB giữ bản bền; localStorage chỉ còn là cache đọc đồng bộ cho lần vẽ đầu.
-function kv<T>(mode: IDBTransactionMode, run: (store: IDBObjectStore) => IDBRequest<T>): Promise<T> {
+export function kv<T>(mode: IDBTransactionMode, run: (store: IDBObjectStore) => IDBRequest<T>): Promise<T> {
   return new Promise<IDBDatabase>((resolve, reject) => {
     const req = indexedDB.open(DB, 1);
     req.onupgradeneeded = () => req.result.createObjectStore(DB);
@@ -78,13 +89,13 @@ function kv<T>(mode: IDBTransactionMode, run: (store: IDBObjectStore) => IDBRequ
 }
 
 /** Nạp bản bền từ IndexedDB sau lần vẽ đầu; gọi một lần lúc app khởi động. */
-export function hydrate() {
+export async function hydrate(): Promise<void> {
   if (typeof indexedDB === "undefined") return;
   navigator.storage?.persist?.().catch(() => {}); // xin trình duyệt đừng dọn dữ liệu khi máy hết chỗ
-  kv<string | undefined>("readonly", (store) => store.get(KEY))
+  return kv<string | undefined>("readonly", (store) => store.get(KEY))
     .then((saved) => {
       if (written) return; // người dùng đã ghi trong lúc chờ — bản trong tay mới hơn
-      if (saved === undefined) return void setStore(getStore()); // lần đầu: đẩy localStorage sang IndexedDB
+      if (saved === undefined) return void commit(getStore()); // lần đầu: đẩy localStorage sang IndexedDB
       cache = parse(saved);
       emit();
     })
@@ -116,13 +127,13 @@ export function importJson(raw: string): Store {
     throw new Error("File không phải JSON hợp lệ");
   }
   // Validate xong mới ghi: file hỏng không được chạm vào dữ liệu đang có trên máy.
-  const store = validateStore(json);
+  const store = { ...validateStore(json), epoch: Date.now() }; // thay hẳn dữ liệu trên mọi máy đã đồng bộ
   setStore(store);
   return store;
 }
 
 export function clearStore() {
-  setStore(emptyStore());
+  setStore({ ...emptyStore(), epoch: Date.now() });
 }
 
 export const uid = () => Math.random().toString(36).slice(2, 10);
