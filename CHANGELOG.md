@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/quannh287/my-exercises/compare/v0.3.0...v0.4.0) (2026-09-28)
+
+
+### Features
+
+* lịch tập mẫu bám theo giàn tạ và lịch học tiếng Anh ([10d4392](https://github.com/quannh287/my-exercises/commit/10d43920bd29b71203ffd51f91e1e7c21d33889a))
+
 ## [0.3.0](https://github.com/quannh287/my-exercises/compare/v0.2.0...v0.3.0) (2026-09-25)
 
 
