@@ -2,7 +2,7 @@
   "schedule": {
     "days": {
       "mon": {
-        "name": "Bụng & core (ngắn)",
+        "name": "Bụng & lưng dưới (ngắn 25')",
         "blocks": [
           {
             "id": "b-mon-w",
@@ -10,19 +10,19 @@
             "items": [
               {
                 "id": "mon-w1",
-                "exerciseId": "Cat_Stretch",
-                "sets": 1,
-                "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
-              },
-              {
-                "id": "mon-w2",
                 "exerciseId": "Standing_Hip_Circles",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
+                "restSec": 15,
                 "holdSec": 30
+              },
+              {
+                "id": "mon-w2",
+                "exerciseId": "Cat_Stretch",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 15,
+                "holdSec": 40
               }
             ]
           },
@@ -36,39 +36,48 @@
                 "exerciseId": "Knee_Hip_Raise_On_Parallel_Bars",
                 "sets": 3,
                 "reps": 12,
-                "restSec": 45
+                "restSec": 45,
+                "note": "Trên khung xà, giữ người không đu đưa"
               },
               {
                 "id": "mon-m2",
-                "exerciseId": "Bent-Knee_Hip_Raise",
-                "sets": 3,
-                "reps": 15,
-                "restSec": 45
-              },
-              {
-                "id": "mon-m3",
                 "exerciseId": "Russian_Twist",
                 "sets": 3,
                 "reps": 20,
-                "restSec": 45,
+                "restSec": 40,
                 "note": "Đếm cả hai bên là 1 lần"
               },
               {
-                "id": "mon-m4",
+                "id": "mon-m3",
                 "exerciseId": "Plank",
                 "sets": 3,
                 "reps": 1,
-                "restSec": 45,
+                "restSec": 40,
                 "holdSec": 45
               },
               {
-                "id": "mon-m5",
+                "id": "mon-m4",
                 "exerciseId": "Side_Bridge",
                 "sets": 2,
                 "reps": 1,
                 "restSec": 30,
                 "holdSec": 30,
                 "note": "Mỗi bên một hiệp"
+              }
+            ]
+          },
+          {
+            "id": "b-mon-back",
+            "kind": "main",
+            "bodyPart": "back",
+            "items": [
+              {
+                "id": "mon-m5",
+                "exerciseId": "Hyperextensions_With_No_Hyperextension_Bench",
+                "sets": 3,
+                "reps": 12,
+                "restSec": 40,
+                "note": "Nằm sấp trên ghế, móc chân vào con lăn"
               }
             ]
           },
@@ -81,7 +90,7 @@
                 "exerciseId": "Hug_Knees_To_Chest",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
+                "restSec": 15,
                 "holdSec": 40
               },
               {
@@ -89,7 +98,7 @@
                 "exerciseId": "Childs_Pose",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
+                "restSec": 15,
                 "holdSec": 45
               }
             ]
@@ -108,32 +117,24 @@
                 "exerciseId": "Arm_Circles",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
+                "restSec": 15,
                 "holdSec": 40
               },
               {
                 "id": "tue-w2",
-                "exerciseId": "Shoulder_Circles",
-                "sets": 1,
-                "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
-              },
-              {
-                "id": "tue-w3",
                 "exerciseId": "Dynamic_Chest_Stretch",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
+                "restSec": 15,
+                "holdSec": 30
               },
               {
-                "id": "tue-w4",
+                "id": "tue-w3",
                 "exerciseId": "Pushups",
                 "sets": 1,
-                "reps": 15,
-                "restSec": 45,
-                "note": "Hiệp làm nóng, không gắng sức"
+                "reps": 12,
+                "restSec": 30,
+                "note": "Hiệp làm nóng, không tới sức"
               }
             ]
           },
@@ -148,22 +149,31 @@
                 "sets": 4,
                 "reps": 8,
                 "restSec": 120,
-                "note": "Bài chính — đủ 4x8 thì tăng 2.5kg"
+                "note": "Hạ giá đỡ vừa tầm, tập một mình thì đừng ép rep cuối"
               },
               {
                 "id": "tue-m2",
                 "exerciseId": "Barbell_Incline_Bench_Press_-_Medium_Grip",
                 "sets": 3,
                 "reps": 10,
-                "restSec": 90
+                "restSec": 90,
+                "note": "Chỉnh lưng ghế lên nấc dốc"
               },
               {
                 "id": "tue-m3",
+                "exerciseId": "Butterfly",
+                "sets": 3,
+                "reps": 12,
+                "restSec": 60,
+                "note": "Dùng cặp tay ép ngực gắn trên khung"
+              },
+              {
+                "id": "tue-m4",
                 "exerciseId": "Dips_-_Chest_Version",
                 "sets": 3,
-                "reps": 10,
+                "reps": 8,
                 "restSec": 75,
-                "note": "Ngả người ra trước để dồn lực vào ngực"
+                "note": "Ngả người ra trước; yếu thì chống chân xuống đất"
               }
             ]
           },
@@ -173,16 +183,15 @@
             "bodyPart": "shoulders",
             "items": [
               {
-                "id": "tue-m4",
+                "id": "tue-m5",
                 "exerciseId": "Standing_Military_Press",
                 "sets": 3,
-                "reps": 8,
-                "restSec": 105,
-                "note": "Siết mông và bụng, không ưỡn lưng"
+                "reps": 10,
+                "restSec": 90
               },
               {
-                "id": "tue-m5",
-                "exerciseId": "Barbell_Rear_Delt_Row",
+                "id": "tue-m6",
+                "exerciseId": "Upright_Barbell_Row",
                 "sets": 3,
                 "reps": 12,
                 "restSec": 60
@@ -195,19 +204,18 @@
             "bodyPart": "arms",
             "items": [
               {
-                "id": "tue-m6",
+                "id": "tue-m7",
                 "exerciseId": "Close-Grip_Barbell_Bench_Press",
                 "sets": 3,
                 "reps": 10,
-                "restSec": 90
+                "restSec": 75
               },
               {
-                "id": "tue-m7",
-                "exerciseId": "Triceps_Pushdown",
-                "sets": 3,
+                "id": "tue-m8",
+                "exerciseId": "Bench_Dips",
+                "sets": 2,
                 "reps": 12,
-                "restSec": 60,
-                "note": "Ròng rọc kéo xô, khuỷu tay ép sát sườn"
+                "restSec": 45
               }
             ]
           },
@@ -220,41 +228,31 @@
                 "exerciseId": "Chest_And_Front_Of_Shoulder_Stretch",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
+                "restSec": 15,
                 "holdSec": 40
               },
               {
                 "id": "tue-c2",
-                "exerciseId": "Triceps_Stretch",
-                "sets": 2,
+                "exerciseId": "Shoulder_Stretch",
+                "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 30,
-                "note": "Mỗi bên một hiệp"
+                "restSec": 15,
+                "holdSec": 30
               },
               {
                 "id": "tue-c3",
-                "exerciseId": "Shoulder_Stretch",
-                "sets": 2,
-                "reps": 1,
-                "restSec": 10,
-                "holdSec": 30,
-                "note": "Mỗi bên một hiệp"
-              },
-              {
-                "id": "tue-c4",
-                "exerciseId": "Childs_Pose",
+                "exerciseId": "Triceps_Stretch",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 45
+                "restSec": 15,
+                "holdSec": 30
               }
             ]
           }
         ]
       },
       "wed": {
-        "name": "Kéo tay không (ngắn)",
+        "name": "Toàn thân tay không (ngắn 25')",
         "blocks": [
           {
             "id": "b-wed-w",
@@ -262,24 +260,23 @@
             "items": [
               {
                 "id": "wed-w1",
-                "exerciseId": "Arm_Circles",
+                "exerciseId": "Shoulder_Circles",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
+                "restSec": 15,
+                "holdSec": 30
               },
               {
                 "id": "wed-w2",
-                "exerciseId": "Dynamic_Back_Stretch",
+                "exerciseId": "Inchworm",
                 "sets": 1,
-                "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
+                "reps": 6,
+                "restSec": 30
               }
             ]
           },
           {
-            "id": "b-wed-back",
+            "id": "b-wed-main",
             "kind": "main",
             "bodyPart": "back",
             "items": [
@@ -287,24 +284,52 @@
                 "id": "wed-m1",
                 "exerciseId": "Pullups",
                 "sets": 4,
-                "reps": 6,
+                "reps": 5,
                 "restSec": 75,
-                "note": "Hết sức thì đạp nhẹ chân ở nhịp lên"
-              },
+                "note": "Không đủ rep thì nhảy lên rồi hạ chậm 3 giây"
+              }
+            ]
+          },
+          {
+            "id": "b-wed-chest",
+            "kind": "main",
+            "bodyPart": "chest",
+            "items": [
               {
                 "id": "wed-m2",
-                "exerciseId": "Chin-Up",
+                "exerciseId": "Pushups",
                 "sets": 3,
-                "reps": 8,
-                "restSec": 60
-              },
+                "reps": 15,
+                "restSec": 45
+              }
+            ]
+          },
+          {
+            "id": "b-wed-legs",
+            "kind": "main",
+            "bodyPart": "legs",
+            "items": [
               {
                 "id": "wed-m3",
-                "exerciseId": "Inverted_Row",
+                "exerciseId": "Bodyweight_Squat",
                 "sets": 3,
-                "reps": 12,
-                "restSec": 60,
-                "note": "Đặt thanh đòn lên giá đỡ ở ngang hông"
+                "reps": 20,
+                "restSec": 45
+              }
+            ]
+          },
+          {
+            "id": "b-wed-core",
+            "kind": "main",
+            "bodyPart": "core",
+            "items": [
+              {
+                "id": "wed-m4",
+                "exerciseId": "Plank",
+                "sets": 2,
+                "reps": 1,
+                "restSec": 40,
+                "holdSec": 45
               }
             ]
           },
@@ -314,19 +339,18 @@
             "items": [
               {
                 "id": "wed-c1",
-                "exerciseId": "Overhead_Lat",
-                "sets": 2,
+                "exerciseId": "Upper_Back_Stretch",
+                "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 30,
-                "note": "Mỗi bên một hiệp"
+                "restSec": 15,
+                "holdSec": 30
               },
               {
                 "id": "wed-c2",
-                "exerciseId": "Standing_Biceps_Stretch",
+                "exerciseId": "Quad_Stretch",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
+                "restSec": 15,
                 "holdSec": 30
               }
             ]
@@ -342,34 +366,18 @@
             "items": [
               {
                 "id": "thu-w1",
-                "exerciseId": "Arm_Circles",
-                "sets": 1,
-                "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
-              },
-              {
-                "id": "thu-w2",
                 "exerciseId": "Dynamic_Back_Stretch",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
+                "restSec": 15,
+                "holdSec": 30
               },
               {
-                "id": "thu-w3",
-                "exerciseId": "Cat_Stretch",
-                "sets": 1,
-                "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
-              },
-              {
-                "id": "thu-w4",
+                "id": "thu-w2",
                 "exerciseId": "Scapular_Pull-Up",
-                "sets": 1,
-                "reps": 10,
-                "restSec": 45
+                "sets": 2,
+                "reps": 8,
+                "restSec": 30
               }
             ]
           },
@@ -383,37 +391,30 @@
                 "exerciseId": "Pullups",
                 "sets": 4,
                 "reps": 6,
-                "restSec": 120,
-                "note": "Bài chính — đủ 4x8 thì đeo thêm tạ"
+                "restSec": 90,
+                "note": "Hết sức thì chuyển sang kéo xô cho đủ hiệp"
               },
               {
                 "id": "thu-m2",
-                "exerciseId": "Wide-Grip_Lat_Pulldown",
-                "sets": 3,
-                "reps": 10,
-                "restSec": 90
+                "exerciseId": "Bent_Over_Barbell_Row",
+                "sets": 4,
+                "reps": 8,
+                "restSec": 90,
+                "note": "Lưng thẳng, tạ sát ống chân"
               },
               {
                 "id": "thu-m3",
-                "exerciseId": "Bent_Over_Barbell_Row",
+                "exerciseId": "Wide-Grip_Lat_Pulldown",
                 "sets": 3,
                 "reps": 10,
-                "restSec": 90,
-                "note": "Thân gập 45 độ, kéo tạ vào bụng dưới"
+                "restSec": 60,
+                "note": "Ròng rọc gắn bánh tạ trên khung"
               },
               {
                 "id": "thu-m4",
-                "exerciseId": "Barbell_Deadlift",
-                "sets": 3,
-                "reps": 6,
-                "restSec": 150,
-                "note": "Lưng thẳng, thanh đòn sát ống chân"
-              },
-              {
-                "id": "thu-m5",
                 "exerciseId": "Barbell_Shrug",
                 "sets": 3,
-                "reps": 15,
+                "reps": 12,
                 "restSec": 60
               }
             ]
@@ -424,19 +425,33 @@
             "bodyPart": "arms",
             "items": [
               {
-                "id": "thu-m6",
+                "id": "thu-m5",
                 "exerciseId": "Barbell_Curl",
                 "sets": 3,
                 "reps": 10,
-                "restSec": 75
+                "restSec": 60
               },
               {
-                "id": "thu-m7",
+                "id": "thu-m6",
                 "exerciseId": "Preacher_Curl",
                 "sets": 3,
-                "reps": 12,
+                "reps": 10,
                 "restSec": 60,
-                "note": "Dùng đệm preacher trên khung"
+                "note": "Tì cùi chỏ vào đệm tựa của ghế"
+              }
+            ]
+          },
+          {
+            "id": "b-thu-core",
+            "kind": "main",
+            "bodyPart": "core",
+            "items": [
+              {
+                "id": "thu-m7",
+                "exerciseId": "Hanging_Leg_Raise",
+                "sets": 3,
+                "reps": 10,
+                "restSec": 45
               }
             ]
           },
@@ -447,42 +462,33 @@
               {
                 "id": "thu-c1",
                 "exerciseId": "Overhead_Lat",
-                "sets": 2,
+                "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 30,
-                "note": "Mỗi bên một hiệp"
+                "restSec": 15,
+                "holdSec": 30
               },
               {
                 "id": "thu-c2",
                 "exerciseId": "Upper_Back_Stretch",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
+                "restSec": 15,
+                "holdSec": 30
               },
               {
                 "id": "thu-c3",
                 "exerciseId": "Standing_Biceps_Stretch",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
+                "restSec": 15,
                 "holdSec": 30
-              },
-              {
-                "id": "thu-c4",
-                "exerciseId": "Childs_Pose",
-                "sets": 1,
-                "reps": 1,
-                "restSec": 10,
-                "holdSec": 45
               }
             ]
           }
         ]
       },
       "fri": {
-        "name": "Đẩy tay không (ngắn)",
+        "name": "Tay & bắp chân (ngắn 25')",
         "blocks": [
           {
             "id": "b-fri-w",
@@ -493,37 +499,16 @@
                 "exerciseId": "Arm_Circles",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
+                "restSec": 15,
                 "holdSec": 40
               },
               {
                 "id": "fri-w2",
-                "exerciseId": "Dynamic_Chest_Stretch",
+                "exerciseId": "Standing_Hip_Circles",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
-              }
-            ]
-          },
-          {
-            "id": "b-fri-chest",
-            "kind": "main",
-            "bodyPart": "chest",
-            "items": [
-              {
-                "id": "fri-m1",
-                "exerciseId": "Pushups",
-                "sets": 4,
-                "reps": 15,
-                "restSec": 60
-              },
-              {
-                "id": "fri-m2",
-                "exerciseId": "Push-Ups_-_Close_Triceps_Position",
-                "sets": 3,
-                "reps": 12,
-                "restSec": 60
+                "restSec": 15,
+                "holdSec": 30
               }
             ]
           },
@@ -533,19 +518,41 @@
             "bodyPart": "arms",
             "items": [
               {
-                "id": "fri-m3",
-                "exerciseId": "Dips_-_Triceps_Version",
+                "id": "fri-m1",
+                "exerciseId": "Barbell_Curl",
                 "sets": 3,
-                "reps": 10,
-                "restSec": 60,
-                "note": "Giữ thân thẳng đứng để dồn vào tay sau"
+                "reps": 12,
+                "restSec": 45
               },
               {
-                "id": "fri-m4",
+                "id": "fri-m2",
+                "exerciseId": "Lying_Close-Grip_Barbell_Triceps_Extension_Behind_The_Head",
+                "sets": 3,
+                "reps": 12,
+                "restSec": 45,
+                "note": "Nằm ghế phẳng, tạ nhẹ thôi"
+              },
+              {
+                "id": "fri-m3",
                 "exerciseId": "Bench_Dips",
                 "sets": 2,
                 "reps": 15,
-                "restSec": 45
+                "restSec": 40
+              }
+            ]
+          },
+          {
+            "id": "b-fri-calf",
+            "kind": "main",
+            "bodyPart": "calves",
+            "items": [
+              {
+                "id": "fri-m4",
+                "exerciseId": "Rocking_Standing_Calf_Raise",
+                "sets": 3,
+                "reps": 15,
+                "restSec": 45,
+                "note": "Đòn gánh trên vai, nhón chậm giữ 1 giây trên đỉnh"
               }
             ]
           },
@@ -555,27 +562,34 @@
             "items": [
               {
                 "id": "fri-c1",
-                "exerciseId": "Chest_And_Front_Of_Shoulder_Stretch",
+                "exerciseId": "Standing_Biceps_Stretch",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
+                "restSec": 15,
+                "holdSec": 30
               },
               {
                 "id": "fri-c2",
                 "exerciseId": "Triceps_Stretch",
-                "sets": 2,
+                "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 30,
-                "note": "Mỗi bên một hiệp"
+                "restSec": 15,
+                "holdSec": 30
+              },
+              {
+                "id": "fri-c3",
+                "exerciseId": "Standing_Gastrocnemius_Calf_Stretch",
+                "sets": 1,
+                "reps": 1,
+                "restSec": 15,
+                "holdSec": 30
               }
             ]
           }
         ]
       },
       "sat": {
-        "name": "Chân · bắp chân · bụng",
+        "name": "Chân · mông · bụng",
         "blocks": [
           {
             "id": "b-sat-w",
@@ -586,25 +600,23 @@
                 "exerciseId": "Standing_Hip_Circles",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 40
+                "restSec": 15,
+                "holdSec": 30
               },
               {
                 "id": "sat-w2",
-                "exerciseId": "Worlds_Greatest_Stretch",
-                "sets": 2,
-                "reps": 1,
-                "restSec": 10,
-                "holdSec": 40,
-                "note": "Mỗi bên một hiệp"
+                "exerciseId": "Bodyweight_Squat",
+                "sets": 1,
+                "reps": 15,
+                "restSec": 30
               },
               {
                 "id": "sat-w3",
-                "exerciseId": "Inchworm",
+                "exerciseId": "Worlds_Greatest_Stretch",
                 "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 45
+                "restSec": 15,
+                "holdSec": 40
               }
             ]
           },
@@ -615,11 +627,11 @@
             "items": [
               {
                 "id": "sat-m1",
-                "exerciseId": "Barbell_Squat",
+                "exerciseId": "Barbell_Full_Squat",
                 "sets": 4,
                 "reps": 8,
                 "restSec": 150,
-                "note": "Bài chính — xuống tới song song đùi, gót luôn chạm sàn"
+                "note": "Đặt đòn lên giá đỡ của ghế, đứng tập ngay trong khung"
               },
               {
                 "id": "sat-m2",
@@ -627,7 +639,7 @@
                 "sets": 3,
                 "reps": 10,
                 "restSec": 90,
-                "note": "Đẩy hông ra sau, gối chỉ hơi chùng"
+                "note": "Cảm giác căng sau đùi mới đúng"
               },
               {
                 "id": "sat-m3",
@@ -635,15 +647,15 @@
                 "sets": 3,
                 "reps": 10,
                 "restSec": 75,
-                "note": "10 lần mỗi chân"
+                "note": "Mỗi chân 10 bước"
               },
               {
                 "id": "sat-m4",
                 "exerciseId": "Leg_Extensions",
                 "sets": 3,
-                "reps": 15,
+                "reps": 12,
                 "restSec": 60,
-                "note": "Tay đòn gắn ghế"
+                "note": "Con lăn trước của ghế"
               },
               {
                 "id": "sat-m5",
@@ -651,7 +663,7 @@
                 "sets": 3,
                 "reps": 12,
                 "restSec": 60,
-                "note": "Tay đòn gắn ghế, nằm sấp"
+                "note": "Nằm sấp, con lăn sau của ghế"
               }
             ]
           },
@@ -662,11 +674,10 @@
             "items": [
               {
                 "id": "sat-m6",
-                "exerciseId": "Standing_Barbell_Calf_Raise",
-                "sets": 4,
+                "exerciseId": "Rocking_Standing_Calf_Raise",
+                "sets": 3,
                 "reps": 15,
-                "restSec": 45,
-                "note": "Kê mũi chân lên bánh tạ để tăng biên độ"
+                "restSec": 45
               }
             ]
           },
@@ -680,15 +691,14 @@
                 "exerciseId": "Knee_Hip_Raise_On_Parallel_Bars",
                 "sets": 3,
                 "reps": 12,
-                "restSec": 60
+                "restSec": 45
               },
               {
                 "id": "sat-m8",
-                "exerciseId": "Plank",
-                "sets": 3,
-                "reps": 1,
-                "restSec": 45,
-                "holdSec": 45
+                "exerciseId": "Russian_Twist",
+                "sets": 2,
+                "reps": 20,
+                "restSec": 40
               }
             ]
           },
@@ -699,38 +709,34 @@
               {
                 "id": "sat-c1",
                 "exerciseId": "Quad_Stretch",
-                "sets": 2,
+                "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 30,
-                "note": "Mỗi bên một hiệp"
+                "restSec": 15,
+                "holdSec": 30
               },
               {
                 "id": "sat-c2",
                 "exerciseId": "Seated_Hamstring",
-                "sets": 2,
+                "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 30,
-                "note": "Mỗi bên một hiệp"
+                "restSec": 15,
+                "holdSec": 40
               },
               {
                 "id": "sat-c3",
-                "exerciseId": "Standing_Gastrocnemius_Calf_Stretch",
-                "sets": 2,
+                "exerciseId": "Lying_Glute",
+                "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 30,
-                "note": "Mỗi bên một hiệp"
+                "restSec": 15,
+                "holdSec": 40
               },
               {
                 "id": "sat-c4",
-                "exerciseId": "Lying_Glute",
-                "sets": 2,
+                "exerciseId": "Standing_Gastrocnemius_Calf_Stretch",
+                "sets": 1,
                 "reps": 1,
-                "restSec": 10,
-                "holdSec": 30,
-                "note": "Mỗi bên một hiệp"
+                "restSec": 15,
+                "holdSec": 30
               }
             ]
           }
